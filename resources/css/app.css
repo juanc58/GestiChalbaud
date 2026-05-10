@@ -1,0 +1,226 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* =====================================================
+   SISTEMA DE DISEÑO — GestiChalbaud
+   U.E.B. Coronel Carlos Delgado Chalbaud
+   Basado en: DESIGN.md (estructura) + visual_identity.md (colores)
+   ===================================================== */
+
+@theme {
+    /* --- Tipografía --- */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, sans-serif;
+
+    /* --- Escala tipográfica (herencia DESIGN.md) --- */
+    --text-caption:     11px;
+    --leading-caption:  1.4;
+    --text-body:        14px;
+    --leading-body:     1.4;
+    --text-heading-sm:  25px;
+    --leading-heading-sm: 1.25;
+    --text-heading:     28px;
+    --leading-heading:  1.2;
+    --text-heading-lg:  32px;
+    --leading-heading-lg: 1.2;
+    --text-display:     48px;
+    --leading-display:  1.2;
+
+    /* --- Pesos tipográficos --- */
+    --font-weight-regular: 400;
+    --font-weight-bold:    700;
+    --font-weight-black:   900;
+
+    /* =====================================================
+       PALETA INSTITUCIONAL GESTICHALBAUD
+       (visual_identity.md → mapeo sobre tokens DESIGN.md)
+       ===================================================== */
+
+    /* Color primario de marca — Azul Marino Institucional */
+    --color-primary:       #1A237E;   /* Navbar, títulos, botones de confirmación  */
+    --color-primary-light: #283593;   /* Hover / variante más clara                */
+
+    /* Acción primaria — Amarillo Sol (reemplaza Energy Gold) */
+    --color-gold:          #FBC02D;   /* CTAs, highlights, badges activos           */
+    --color-gold-dark:     #F9A825;   /* Hover del dorado                           */
+
+    /* Color de alerta y detalles sutiles — Rojo Institucional */
+    --color-danger:        #D32F2F;   /* Alertas, botones destructivos, acentos min.*/
+    --color-danger-light:  #FFEBEE;   /* Fondo suave para bloques de error          */
+
+    /* Superficies neutras (herencia DESIGN.md adaptada) */
+    --color-canvas:        #ffffff;   /* Fondo principal de página                  */
+    --color-pearl:         #f7f7f3;   /* Fondo secciones secundarias                */
+    --color-cream:         #FFF59D;   /* Cards y contenedores de lectura            */
+    --color-cream-soft:    rgba(255, 245, 157, 0.5); /* Crema con opacidad para inputs */
+    --color-beige:         #f0f0ec;   /* Inputs y tarjetas interactivas             */
+
+    /* Neutros de texto y bordes */
+    --color-ink:           #000000;   /* Contraste máximo                           */
+    --color-washed-black:  #1a1a1a;   /* Texto principal                            */
+    --color-dim-grey:      #6d6868;   /* Texto secundario, placeholders             */
+    --color-concrete:      #d4d4d0;   /* Divisores, bordes suaves                   */
+    --color-silver-mist:   #b3b3b3;   /* Bordes de inputs desactivados              */
+
+    /* --- Espaciado (herencia DESIGN.md exacta) --- */
+    --spacing-5:  5px;
+    --spacing-6:  6px;
+    --spacing-7:  7px;
+    --spacing-9:  9px;
+    --spacing-11: 11px;
+    --spacing-12: 12px;
+    --spacing-14: 14px;
+    --spacing-16: 16px;
+    --spacing-18: 18px;
+    --spacing-21: 21px;
+    --spacing-22: 22px;
+    --spacing-24: 24px;
+    --spacing-28: 28px;
+    --spacing-48: 48px;
+    --spacing-56: 56px;
+    --spacing-60: 60px;
+
+    /* --- Bordes redondeados (herencia DESIGN.md exacta) --- */
+    --radius-input:   4.375px;  /* Inputs                  */
+    --radius-tags:    9999px;   /* Etiquetas/badges         */
+    --radius-cards:   24px;     /* Tarjetas                 */
+    --radius-images:  40px;     /* Imágenes                 */
+    --radius-buttons: 999px;    /* Botones tipo pill        */
+
+    /* --- Layout --- */
+    --section-gap:   60px;
+    --card-padding:  14px;
+    --element-gap:   14px;
+}
+
+/* =====================================================
+   UTILIDADES GLOBALES
+   ===================================================== */
+
+/* Detalle rojo — micro-acento institucional */
+.detail-danger {
+    border-left: 3px solid var(--color-danger);
+}
+
+.dot-danger::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-danger);
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Botones primarios — Azul Marino */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-radius: var(--radius-buttons);
+    padding: var(--spacing-16) var(--spacing-28);
+    font-weight: var(--font-weight-bold);
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+    background-color: var(--color-primary-light);
+    box-shadow: 0 8px 24px rgba(26, 35, 126, 0.3);
+}
+
+/* Botones CTA — Amarillo Sol */
+.btn-gold {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+    border-radius: var(--radius-buttons);
+    padding: var(--spacing-16) var(--spacing-28);
+    font-weight: var(--font-weight-bold);
+    transition: filter 0.2s, box-shadow 0.2s;
+}
+.btn-gold:hover {
+    filter: brightness(0.95);
+    box-shadow: 0 8px 24px rgba(251, 192, 45, 0.35);
+}
+
+/* Botones destructivos — Rojo Institucional */
+.btn-danger {
+    background-color: var(--color-danger);
+    color: #ffffff;
+    border-radius: var(--radius-buttons);
+    padding: var(--spacing-16) var(--spacing-28);
+    font-weight: var(--font-weight-bold);
+    transition: background-color 0.2s;
+}
+.btn-danger:hover {
+    background-color: #B71C1C;
+}
+
+/* Botón ghost (borde oscuro) */
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--color-washed-black);
+    color: var(--color-washed-black);
+    border-radius: var(--radius-buttons);
+    padding: var(--spacing-16) var(--spacing-14);
+    font-weight: var(--font-weight-bold);
+    transition: background-color 0.2s;
+}
+.btn-ghost:hover {
+    background-color: var(--color-pearl);
+}
+
+/* Cards */
+.card {
+    background-color: var(--color-canvas);
+    border-radius: var(--radius-cards);
+    padding: var(--card-padding);
+}
+
+.card-cream {
+    background-color: var(--color-cream);
+    border-radius: var(--radius-cards);
+    padding: var(--card-padding);
+}
+
+.card-primary {
+    background-color: var(--color-primary);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-48);
+    color: #ffffff;
+}
+
+.card-gold {
+    background-color: var(--color-gold);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-48);
+}
+
+/* Inputs */
+.field-input {
+    background-color: var(--color-beige);
+    border: 1px solid var(--color-silver-mist);
+    border-radius: var(--radius-input);
+    color: var(--color-washed-black);
+    padding: var(--spacing-9) var(--spacing-14);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+}
+.field-input:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(251, 192, 45, 0.2);
+}
+
+/* Alertas de error con rojo institucional */
+.alert-danger {
+    background-color: var(--color-danger-light);
+    border-left: 4px solid var(--color-danger);
+    color: var(--color-danger);
+    border-radius: var(--radius-cards);
+    padding: var(--spacing-14) var(--spacing-16);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-body);
+}
