@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\SecurityQuestion;
+use App\Models\UserSecurityAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -46,7 +48,9 @@ class UserController extends Controller
         if (!auth()->user()->isAdmin()) abort(403);
         
         $roles = Role::all();
-        return view('users.edit', compact('user', 'roles'));
+        $securityQuestions = SecurityQuestion::all();
+        $userSecurityAnswer = UserSecurityAnswer::where('user_id', $user->id)->with('question')->first();
+        return view('users.edit', compact('user', 'roles', 'securityQuestions', 'userSecurityAnswer'));
     }
 
     public function update(Request $request, User $user)
@@ -92,6 +96,17 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Update security question if admin provides a new answer
+        if ($request->filled('security_answer')) {
+            UserSecurityAnswer::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'security_question_id' => $request->security_question_id,
+                    'answer'               => Hash::make(strtolower(trim($request->security_answer))),
+                ]
+            );
+        }
 
         return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }

@@ -159,6 +159,57 @@
                     </button>
                 </div>
             </form>
+
+            <!-- Security Question Management -->
+            <form action="{{ route('profile.update') }}" method="POST" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-6">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <h4 class="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">Pregunta de Seguridad</h4>
+                    <p class="text-[11px] text-gray-400 font-semibold">Usada para recuperar tu acceso desde el portal de login.</p>
+                </div>
+
+                @if($userSecurityAnswer)
+                    <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 text-sm font-semibold text-blue-700">
+                        Pregunta actual: <span class="font-black">{{ $userSecurityAnswer->question->question ?? 'No configurada' }}</span>
+                    </div>
+                @else
+                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-sm font-semibold text-amber-700">
+                        ⚠ Aún no tienes configurada una pregunta de seguridad. Sin ella no podrás recuperar tu acceso.
+                    </div>
+                @endif
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="group space-y-2 md:col-span-2">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nueva Pregunta</label>
+                        <select name="security_question_id" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-amber-200 outline-none transition-all font-bold text-[#032e5e] appearance-none">
+                            <option value="">-- Sin cambios --</option>
+                            @foreach($securityQuestions as $q)
+                                <option value="{{ $q->id }}" {{ (old('security_question_id', $userSecurityAnswer?->security_question_id) == $q->id) ? 'selected' : '' }}>
+                                    {{ $q->question }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="group space-y-2 md:col-span-2">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nueva Respuesta <span class="text-amber-500">(dejar en blanco para no cambiar)</span></label>
+                        <input type="text" name="security_answer" placeholder="Tu nueva respuesta secreta" autocomplete="off"
+                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-amber-200 focus:bg-white outline-none transition-all font-bold text-[#032e5e]">
+                        @error('security_answer')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
+                {{-- Re-send all other hidden required profile fields so the same route works --}}
+                <input type="hidden" name="first_name" value="{{ $user->first_name }}">
+                <input type="hidden" name="last_name" value="{{ $user->last_name }}">
+
+                <div class="pt-2">
+                    <button type="submit" class="bg-amber-500 text-white px-8 py-4 rounded-2xl font-bold hover:bg-amber-600 transition-all shadow-lg shadow-amber-200 text-sm">
+                        Actualizar Pregunta de Seguridad
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Role Badge & Summary -->

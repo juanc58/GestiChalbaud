@@ -125,149 +125,182 @@
 
     <!-- ══ HEADER DIAGONAL ══ -->
     <div class="diag-header px-6 pt-10 pb-24 relative z-0">
-        <div class="relative z-10 max-w-2xl mx-auto">
+        <div class="relative z-10 max-w-6xl mx-auto">
             <!-- Back -->
             <a href="/" class="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm font-semibold mb-8 transition-colors">
-                <span class="bg-white/10 rounded-xl px-3 py-1.5 text-xs font-bold">← Volver</span>
+                <span class="bg-white/10 rounded-xl px-3 py-1.5 text-xs font-bold">← Volver al Login</span>
             </a>
 
             <!-- Logo + Título -->
             <div class="flex items-center gap-4 mb-5">
                 <img src="{{ asset('assets/logo.jpeg') }}" alt="Logo"
-                     class="w-14 h-14 rounded-full object-cover ring-2 ring-white/30 shadow-lg"
+                     class="w-16 h-16 rounded-full object-cover ring-2 ring-white/30 shadow-lg"
                      onerror="this.style.display='none'">
                 <div>
-                    <p class="text-white/50 text-xs font-semibold uppercase tracking-widest">GestiChalbaud</p>
-                    <h1 class="text-2xl font-black text-white leading-tight">Crear Cuenta de Representante</h1>
+                    <p class="text-white/50 text-sm font-bold uppercase tracking-widest">GestiChalbaud</p>
+                    <h1 class="text-3xl font-black text-white leading-tight">Crear Cuenta de Representante</h1>
                 </div>
             </div>
-            <p class="text-white/50 text-sm leading-relaxed">Completa tus datos personales para acceder al portal académico de la U.E.B. Coronel Carlos Delgado Chalbaud.</p>
+            <p class="text-white/60 text-base leading-relaxed max-w-3xl">Completa tus datos personales para acceder al portal académico de la U.E.B. Coronel Carlos Delgado Chalbaud. Todos los campos marcados con asterisco (*) son obligatorios.</p>
         </div>
     </div>
 
     <!-- ══ FORM CARD FLOTANTE ══ -->
-    <div class="max-w-2xl mx-auto px-4 pb-20">
-        <div class="form-card p-8 slide-up delay-100">
+    <div class="max-w-6xl mx-auto px-4 pb-20">
+        <div class="form-card p-10 lg:p-14 slide-up delay-100">
 
             @if ($errors->any())
                 <div class="error-box mb-8">
                     @foreach ($errors->all() as $error)
                         <div class="flex items-center gap-2 mb-1">
                             <span style="width:6px;height:6px;background:#D32F2F;border-radius:50%;flex-shrink:0;display:inline-block;"></span>
-                            {{ $error }}
+                            <span class="text-base">{{ $error }}</span>
                         </div>
                     @endforeach
                 </div>
             @endif
 
-            <form action="{{ route('register.representative.post') }}" method="POST" class="space-y-8">
+            <form action="{{ route('register.representative.post') }}" method="POST">
                 @csrf
-
-                <!-- ── SECCIÓN 1: Datos Personales ── -->
-                <div class="space-y-5">
-                    <p class="sec-label">Datos Personales Básicos</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cédula *</label>
-                            <div class="relative">
-                                <svg class="field-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
-                                <input type="number" name="cedula" value="{{ old('cedula') }}" required placeholder="ej. 12345678" class="field">
+                <div class="flex flex-col lg:flex-row gap-12">
+                    
+                    <!-- ── COLUMNA IZQUIERDA: Datos Personales ── -->
+                    <div class="w-full lg:w-1/2 space-y-8">
+                        <div class="space-y-6">
+                            <p class="sec-label">Datos Personales Básicos</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Cédula *</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2"/></svg>
+                                        <input type="number" name="cedula" value="{{ old('cedula') }}" required placeholder="ej. 12345678" class="field text-base py-3.5 pl-12">
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Parentesco *</label>
+                                    <select name="relationship" required class="field field-no-icon text-base py-3.5" style="padding-left:16px;">
+                                        <option value="">Seleccione...</option>
+                                        @foreach(['Padre','Madre','Abuelo/a','Tío/a','Representante Legal'] as $r)
+                                            <option value="{{ $r }}" {{ old('relationship')==$r ? 'selected':'' }}>{{ $r }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Parentesco *</label>
-                            <select name="relationship" required class="field field-no-icon" style="padding-left:16px;">
-                                <option value="">Seleccione...</option>
-                                @foreach(['Padre','Madre','Abuelo/a','Tío/a','Representante Legal'] as $r)
-                                    <option value="{{ $r }}" {{ old('relationship')==$r ? 'selected':'' }}>{{ $r }}</option>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                @foreach([['first_name','Primer Nombre','text',true],['second_name','Segundo Nombre','text',false],['last_name','Primer Apellido','text',true],['second_last_name','Segundo Apellido','text',false]] as [$n,$l,$t,$r])
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">{{ $l }} {{ $r ? '*' : '' }}</label>
+                                    <input type="{{ $t }}" name="{{ $n }}" value="{{ old($n) }}" {{ $r ? 'required':'' }} class="field field-no-icon text-base py-3.5">
+                                </div>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach([['first_name','Primer Nombre','text',true],['second_name','Segundo Nombre','text',false],['last_name','Primer Apellido','text',true],['second_last_name','Segundo Apellido','text',false]] as [$n,$l,$t,$r])
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $l }} {{ $r ? '*' : '' }}</label>
-                            <input type="{{ $t }}" name="{{ $n }}" value="{{ old($n) }}" {{ $r ? 'required':'' }} class="field field-no-icon">
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
 
-                <!-- ── SECCIÓN 2: Contacto ── -->
-                <div class="space-y-5 pt-2 border-t border-gray-100">
-                    <p class="sec-label">Información de Contacto</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">WhatsApp *</label>
-                            <div class="relative">
-                                <svg class="field-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                                <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="+58 412..." class="field">
+                        <!-- Seguridad (Movido a la izq o der, vamos a ponerlo en la izq para balancear) -->
+                        <div class="space-y-6 pt-6 border-t border-gray-100">
+                            <p class="sec-label">Seguridad de la Cuenta</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Contraseña *</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                        <input type="password" name="password" required class="field text-base py-3.5 pl-12">
+                                    </div>
+                                    <p class="text-[10px] text-gray-400 font-medium ml-1">Mínimo 8 caracteres, Mayúscula, Número y Especial.</p>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Confirmar Clave *</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                        <input type="password" name="password_confirmation" required class="field text-base py-3.5 pl-12">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Teléfono Local</label>
-                            <input type="text" name="phone_local" value="{{ old('phone_local') }}" placeholder="0243..." class="field field-no-icon">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Correo Electrónico</label>
-                            <div class="relative">
-                                <svg class="field-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                <input type="email" name="email" value="{{ old('email') }}" placeholder="usuario@gmail.com" class="field">
-                            </div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Facebook</label>
-                            <input type="text" name="facebook" value="{{ old('facebook') }}" placeholder="Link de perfil" class="field field-no-icon">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ocupación</label>
-                            <input type="text" name="job_title" value="{{ old('job_title') }}" placeholder="Ej: Comerciante" class="field field-no-icon">
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Lugar de Trabajo</label>
-                            <input type="text" name="workplace_address" value="{{ old('workplace_address') }}" class="field field-no-icon">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ── SECCIÓN 3: Seguridad ── -->
-                <div class="space-y-5 pt-2 border-t border-gray-100">
-                    <p class="sec-label">Seguridad de la Cuenta</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contraseña *</label>
-                            <div class="relative">
-                                <svg class="field-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                <input type="password" name="password" required class="field">
-                            </div>
-                            <p class="text-[9px] text-gray-400 font-medium ml-1">Mínimo 8 caracteres, Mayúscula, Número y Carácter Especial.</p>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Confirmar Contraseña *</label>
-                            <div class="relative">
-                                <svg class="field-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                <input type="password" name="password_confirmation" required class="field">
+                        <!-- Pregunta Secreta -->
+                        <div class="space-y-6 pt-6 border-t border-gray-100">
+                            <p class="sec-label">Pregunta de Seguridad</p>
+                            <p class="text-xs text-gray-400 font-medium -mt-4">Usada para recuperar tu acceso si olvidas tu contraseña.</p>
+                            <div class="grid grid-cols-1 gap-5">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Pregunta Secreta *</label>
+                                    <select name="security_question_id" required class="field field-no-icon text-base py-3.5" style="padding-left:16px;">
+                                        <option value="">Seleccione una pregunta...</option>
+                                        @foreach($securityQuestions as $question)
+                                            <option value="{{ $question->id }}" {{ old('security_question_id') == $question->id ? 'selected' : '' }}>
+                                                {{ $question->question }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('security_question_id')<p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Tu Respuesta *</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-3 3v-3z"/></svg>
+                                        <input type="text" name="security_answer" value="{{ old('security_answer') }}" required placeholder="Tu respuesta secreta" class="field text-base py-3.5 pl-12" autocomplete="off">
+                                    </div>
+                                    @error('security_answer')<p class="text-[10px] text-red-500 font-bold ml-1">{{ $message }}</p>@enderror
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- ── SUBMIT ── -->
-                <div class="pt-2">
-                    <button type="submit" class="btn-submit">
-                        Completar Registro
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </button>
-                    <p class="text-center text-xs text-gray-400 mt-4">
-                        ¿Ya tienes cuenta? <a href="/" class="text-primary font-semibold hover:underline" style="color:#1A237E;">Inicia sesión →</a>
-                    </p>
+                    <!-- ── COLUMNA DERECHA: Contacto y Submit ── -->
+                    <div class="w-full lg:w-1/2 flex flex-col justify-between space-y-8">
+                        <div class="space-y-6">
+                            <p class="sec-label">Información de Contacto</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">WhatsApp *</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                        <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="+58 412..." class="field text-base py-3.5 pl-12">
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Teléfono Local</label>
+                                    <input type="text" name="phone_local" value="{{ old('phone_local') }}" placeholder="0243..." class="field field-no-icon text-base py-3.5">
+                                </div>
+                                <div class="space-y-2 sm:col-span-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Correo Electrónico</label>
+                                    <div class="relative">
+                                        <svg class="field-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <input type="email" name="email" value="{{ old('email') }}" placeholder="usuario@gmail.com" class="field text-base py-3.5 pl-12">
+                                    </div>
+                                </div>
+                                <div class="space-y-2 sm:col-span-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Facebook</label>
+                                    <input type="text" name="facebook" value="{{ old('facebook') }}" placeholder="Link de perfil (opcional)" class="field field-no-icon text-base py-3.5">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Ocupación</label>
+                                    <input type="text" name="job_title" value="{{ old('job_title') }}" placeholder="Ej: Comerciante" class="field field-no-icon text-base py-3.5">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-500 uppercase tracking-widest">Lugar de Trabajo</label>
+                                    <input type="text" name="workplace_address" value="{{ old('workplace_address') }}" class="field field-no-icon text-base py-3.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── SUBMIT ── -->
+                        <div class="pt-6 mt-auto">
+                            <button type="submit" class="btn-submit text-lg py-4">
+                                Completar Registro
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                            </button>
+                            <p class="text-center text-sm text-gray-500 font-medium mt-5">
+                                ¿Ya tienes cuenta? <a href="/" class="text-primary font-black hover:underline" style="color:#1A237E;">Inicia sesión →</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
 
         <!-- Footer pequeño -->
-        <p class="text-center text-[10px] text-gray-300 font-medium uppercase tracking-widest mt-8">
+        <p class="text-center text-xs text-gray-400 font-bold uppercase tracking-widest mt-10">
             © 2026 GestiChalbaud — U.E.B. Coronel Carlos Delgado Chalbaud
         </p>
     </div>

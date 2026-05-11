@@ -25,6 +25,14 @@ Route::get('/captcha/image', function () {
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.post');
 Route::match(['get', 'post'], '/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Password Recovery via Security Questions
+use App\Http\Controllers\Auth\PasswordResetController;
+Route::middleware('guest')->group(function () {
+    Route::post('/password/recovery/question', [PasswordResetController::class, 'getQuestion'])->name('password.recovery.question')->middleware('throttle:5,1');
+    Route::post('/password/recovery/verify', [PasswordResetController::class, 'verifyAnswer'])->name('password.recovery.verify')->middleware('throttle:5,1');
+    Route::post('/password/recovery/reset', [PasswordResetController::class, 'resetPassword'])->name('password.recovery.reset');
+});
+
 // Representative Self-Registration
 Route::get('/register-representative', [RegisterRepresentativeController::class, 'showRegistrationForm'])->name('register.representative');
 Route::post('/register-representative', [RegisterRepresentativeController::class, 'register'])->name('register.representative.post');

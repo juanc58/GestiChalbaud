@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use App\Models\SecurityQuestion;
+use App\Models\UserSecurityAnswer;
 
 class ProfileController extends Controller
 {
     public function edit()
     {
         $user = auth()->user()->load('teacher', 'representative');
-        return view('profile.edit', compact('user'));
+        $securityQuestions = SecurityQuestion::all();
+        $userSecurityAnswer = UserSecurityAnswer::where('user_id', $user->id)->with('question')->first();
+        return view('profile.edit', compact('user', 'securityQuestions', 'userSecurityAnswer'));
     }
 
     public function update(Request $request)
@@ -39,9 +43,14 @@ class ProfileController extends Controller
             $rules['academic_degree'] = 'nullable|string|max:255';
         }
 
+        if ($request->filled('security_answer')) {
+            $rules['security_question_id'] = 'required|exists:security_questions,id';
+            $rules['security_answer']      = 'required|string|max:255';
+        }
+
         $request->validate($rules);
 
-        // Update shared identity fields in users table
+        // Update shared identity fields
         $user->update([
             'first_name'       => $request->first_name,
             'second_name'      => $request->second_name,
@@ -50,6 +59,17 @@ class ProfileController extends Controller
             'phone'            => $request->phone,
             'email'            => $request->email,
         ]);
+
+        // Update security question if provided
+        if ($request->filled('security_answer')) {
+            UserSecurityAnswer::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'security_question_id' => $request->security_question_id,
+                    'answer'               => Hash::make(strtolower(trim($request->security_answer))),
+                ]
+            );
+        }
 
         // Update role-specific fields
         if ($user->isDocente() && $user->teacher) {

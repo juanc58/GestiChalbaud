@@ -54,8 +54,23 @@ class DatabaseSeeder extends Seeder
         ]);
         
         // 5. Seed Security Questions
-        \App\Models\SecurityQuestion::create(['question' => '¿Cuál es el nombre de tu primera mascota?']);
-        \App\Models\SecurityQuestion::create(['question' => '¿En qué ciudad naciste?']);
-        \App\Models\SecurityQuestion::create(['question' => '¿Cuál es tu color favorito?']);
+        $questions = [
+            '¿Cuál es el nombre de tu primera mascota?',
+            '¿En qué ciudad naciste?',
+            '¿Cuál es tu color favorito?',
+            '¿Cuál es el nombre de tu madre?',
+            '¿Cuál era el nombre de tu primera escuela?',
+            '¿Cuál es tu comida favorita?',
+            '¿Cuál es el nombre de tu mejor amigo de la infancia?',
+            '¿Cuál es el modelo de tu primer auto?',
+            '¿En qué año te graduaste de la secundaria?',
+            '¿Cuál es el nombre de tu autor favorito?',
+            '¿Cuál es tu película favorita?',
+            '¿Cuál es el nombre de tu abuelo materno?'
+        ];
+
+        foreach ($questions as $q) {
+            \App\Models\SecurityQuestion::firstOrCreate(['question' => $q]);
+        }
     }
 }
