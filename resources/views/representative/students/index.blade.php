@@ -4,10 +4,10 @@
 <div class="max-w-6xl mx-auto space-y-8">
     <div class="flex justify-between items-end">
         <div>
-            <h3 class="text-2xl font-extrabold text-[#032e5e]">Mis Representados</h3>
+            <h3 class="text-2xl font-extrabold text-[#1A237E]">Mis Representados</h3>
             <p class="text-gray-500 font-semibold">Gestiona la información académica de tus hijos.</p>
         </div>
-        <a href="{{ route('representative.students.create') }}" class="px-6 py-3 bg-[#032e5e] text-white rounded-2xl font-bold flex items-center shadow-lg shadow-[#032e5e]/20 hover:bg-[#032e5e]/90 transition-all text-sm">
+        <a href="{{ route('representative.students.create') }}" class="px-6 py-3 bg-[#1A237E] text-white rounded-2xl font-bold flex items-center shadow-sm hover:bg-[#1A237E]/90 transition-all text-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Registrar Nuevo Hijo(a)
         </a>
@@ -15,15 +15,15 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($students as $student)
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-xl hover:shadow-primary/5 transition-all">
-                <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-[#032e5e] mb-4 border-2 border-blue-100 group-hover:scale-110 transition-transform">
+            <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100 flex flex-col items-center text-center group hover:shadow-xl hover:shadow-primary/5 transition-all">
+                <div class="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center text-[#1A237E] mb-4 border-2 border-blue-100 group-hover:scale-110 transition-transform">
                     <span class="text-2xl font-black uppercase">{{ substr($student->first_name, 0, 1) }}{{ substr($student->last_name, 0, 1) }}</span>
                 </div>
-                <h4 class="font-extrabold text-[#032e5e] text-lg">{{ $student->first_name }} {{ $student->last_name }}</h4>
+                <h4 class="font-extrabold text-[#1A237E] text-lg">{{ $student->first_name }} {{ $student->last_name }}</h4>
                 
                 @php $latestEnrollment = $student->enrollments->first(); @endphp
                 @if($latestEnrollment)
-                    <div class="mt-2 text-xs font-bold text-[#c56c39] uppercase tracking-widest bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+                    <div class="mt-2 text-xs font-bold text-[#FBC02D] uppercase tracking-widest bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
                         {{ $latestEnrollment->section->grade->name }} - Sección "{{ $latestEnrollment->section->name }}"
                     </div>
                 @endif

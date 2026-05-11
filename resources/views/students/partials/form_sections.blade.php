@@ -1,40 +1,40 @@
 {{-- STEP 1: Identificación --}}
-<div class="wizard-step bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100" data-step="1">
-    <h4 class="text-[#c56c39] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-        <span class="w-8 h-8 rounded-full bg-[#c56c39]/10 flex items-center justify-center mr-3">1</span>
+<div class="wizard-step bg-white p-6 rounded-xl shadow-sm border border-gray-200" data-step="1">
+    <h4 class="text-[#FBC02D] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+        <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">1</span>
         Identificación del Estudiante
     </h4>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Primer Nombre <span class="text-red-500">*</span></label>
-            <input type="text" name="first_name" value="{{ old('first_name', $student->first_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="first_name" value="{{ old('first_name', $student->first_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('first_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Segundo Nombre</label>
-            <input type="text" name="second_name" value="{{ old('second_name', $student->second_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="second_name" value="{{ old('second_name', $student->second_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Primer Apellido <span class="text-red-500">*</span></label>
-            <input type="text" name="last_name" value="{{ old('last_name', $student->last_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="last_name" value="{{ old('last_name', $student->last_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('last_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Segundo Apellido</label>
-            <input type="text" name="second_last_name" value="{{ old('second_last_name', $student->second_last_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="second_last_name" value="{{ old('second_last_name', $student->second_last_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Cédula (Opcional)</label>
-            <input type="text" id="cedula_input" name="cedula" value="{{ old('cedula', $student->cedula ?? '') }}" placeholder="Ej: 12.345.678" maxlength="10" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" id="cedula_input" name="cedula" value="{{ old('cedula', $student->cedula ?? '') }}" placeholder="Ej: 12.345.678" maxlength="10" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Fecha de Nacimiento <span class="text-red-500">*</span></label>
-            <input type="date" id="birth_date_field" name="birth_date" value="{{ old('birth_date', isset($student->birth_date) ? \Carbon\Carbon::parse($student->birth_date)->format('Y-m-d') : '') }}" max="{{ now()->subYears(3)->format('Y-m-d') }}" min="{{ now()->subYears(18)->addDay()->format('Y-m-d') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="date" id="birth_date_field" name="birth_date" value="{{ old('birth_date', isset($student->birth_date) ? \Carbon\Carbon::parse($student->birth_date)->format('Y-m-d') : '') }}" max="{{ now()->subYears(3)->format('Y-m-d') }}" min="{{ now()->subYears(18)->addDay()->format('Y-m-d') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('birth_date')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Estado de Nacimiento <span class="text-red-500">*</span></label>
-            <select id="select_birth_estado" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none">
+            <select id="select_birth_estado" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none">
                 <option value="">Cargando estados...</option>
             </select>
             <input type="hidden" name="birth_place_state" id="birth_place_state" value="{{ old('birth_place_state', $student->birth_place_state ?? '') }}">
@@ -42,7 +42,7 @@
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Localidad de Nacimiento <span class="text-red-500">*</span></label>
-            <select id="select_birth_municipio" required disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none disabled:opacity-50">
+            <select id="select_birth_municipio" required disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none disabled:opacity-50">
                 <option value="">Seleccione un estado primero...</option>
             </select>
             <input type="hidden" name="birth_place_locality" id="birth_place_locality" value="{{ old('birth_place_locality', $student->birth_place_locality ?? '') }}">
@@ -50,7 +50,7 @@
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Sexo <span class="text-red-500">*</span></label>
-            <select name="gender" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none">
+            <select name="gender" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none">
                 <option value="M" {{ old('gender',$student->gender??'')==='M'?'selected':'' }}>Masculino</option>
                 <option value="F" {{ old('gender',$student->gender??'')==='F'?'selected':'' }}>Femenino</option>
             </select>
@@ -59,9 +59,9 @@
 </div>
 
 {{-- STEP 2: Salud y Tallas --}}
-<div class="wizard-step hidden bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100" data-step="2">
-    <h4 class="text-[#c56c39] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-        <span class="w-8 h-8 rounded-full bg-[#c56c39]/10 flex items-center justify-center mr-3">2</span>
+<div class="wizard-step hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200" data-step="2">
+    <h4 class="text-[#FBC02D] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+        <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">2</span>
         Antropometría y Salud
     </h4>
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
@@ -69,12 +69,12 @@
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">{{ $lbl }}</label>
             @if($field==='shoes_size')
-            <select name="{{ $field }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none">
+            <select name="{{ $field }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none">
                 <option value="">—</option>
                 @foreach(range(18,42) as $s)<option value="{{ $s }}" {{ old($field,$student->$field??'')==$s?'selected':'' }}>{{ $s }}</option>@endforeach
             </select>
             @else
-            <select name="{{ $field }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none">
+            <select name="{{ $field }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none">
                 <option value="">—</option>
                 @foreach(['2','4','6','8','10','12','14','XS','S','M','L','XL','XXL'] as $s)<option value="{{ $s }}" {{ old($field,$student->$field??'')===$s?'selected':'' }}>{{ $s }}</option>@endforeach
             </select>
@@ -83,12 +83,12 @@
         @endforeach
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Peso (kg)</label>
-            <input type="number" step="0.1" name="weight" min="5" max="200" value="{{ old('weight',$student->weight??'') }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="number" step="0.1" name="weight" min="5" max="200" value="{{ old('weight',$student->weight??'') }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('weight')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Altura (m)</label>
-            <input type="number" step="0.01" name="height" min="0.5" max="2.5" value="{{ old('height',$student->height??'') }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="number" step="0.01" name="height" min="0.5" max="2.5" value="{{ old('height',$student->height??'') }}" class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('height')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
     </div>
@@ -126,22 +126,22 @@
 </div>
 
 {{-- STEP 3: Ubicación --}}
-<div class="wizard-step hidden bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100" data-step="3">
-    <h4 class="text-[#c56c39] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-        <span class="w-8 h-8 rounded-full bg-[#c56c39]/10 flex items-center justify-center mr-3">3</span>
+<div class="wizard-step hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200" data-step="3">
+    <h4 class="text-[#FBC02D] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+        <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">3</span>
         Ubicación de Residencia
     </h4>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Estado <span class="text-red-500">*</span></label>
-            <select id="select_estado" name="estado_id" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none">
+            <select id="select_estado" name="estado_id" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none">
                 <option value="">Cargando estados...</option>
             </select>
             <input type="hidden" name="estado_name" id="estado_name" value="{{ old('estado_name',$student->address->state??'') }}">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Municipio <span class="text-red-500">*</span></label>
-            <select id="select_municipio" name="municipio_id" disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none disabled:opacity-50">
+            <select id="select_municipio" name="municipio_id" disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none disabled:opacity-50">
                 <option value="">Seleccione un estado primero...</option>
             </select>
             <input type="hidden" name="municipality" id="municipality_name" value="{{ old('municipality',$student->address->municipality??'') }}">
@@ -149,7 +149,7 @@
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Parroquia <span class="text-red-500">*</span></label>
-            <select id="select_parroquia" name="parroquia_id" disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold appearance-none disabled:opacity-50">
+            <select id="select_parroquia" name="parroquia_id" disabled class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold appearance-none disabled:opacity-50">
                 <option value="">Seleccione un municipio primero...</option>
             </select>
             <input type="hidden" name="parish" id="parish_name" value="{{ old('parish',$student->address->parish??'') }}">
@@ -157,49 +157,49 @@
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Sector / Calle <span class="text-red-500">*</span></label>
-            <input type="text" name="sector" value="{{ old('sector',$student->address->sector??'') }}" required placeholder="Ej: Sector Las Flores, Calle 4" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="sector" value="{{ old('sector',$student->address->sector??'') }}" required placeholder="Ej: Sector Las Flores, Calle 4" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('sector')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2 md:col-span-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Nro Casa / Apto <span class="text-red-500">*</span></label>
-            <input type="text" name="house_apt_number" value="{{ old('house_apt_number',$student->address->house_apt_number??'') }}" required placeholder="Ej: Casa 45 o Apto 2B" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="house_apt_number" value="{{ old('house_apt_number',$student->address->house_apt_number??'') }}" required placeholder="Ej: Casa 45 o Apto 2B" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
             @error('house_apt_number')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
     </div>
 </div>
 
 {{-- STEP 4: Antecedentes --}}
-<div class="wizard-step hidden bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100" data-step="4">
-    <h4 class="text-[#c56c39] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-        <span class="w-8 h-8 rounded-full bg-[#c56c39]/10 flex items-center justify-center mr-3">4</span>
+<div class="wizard-step hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200" data-step="4">
+    <h4 class="text-[#FBC02D] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+        <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">4</span>
         Antecedentes Académicos
     </h4>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Plantel de Procedencia</label>
-            <input type="text" name="previous_school_name" value="{{ old('previous_school_name',$student->academicBackground->previous_school_name??'') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="previous_school_name" value="{{ old('previous_school_name',$student->academicBackground->previous_school_name??'') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Código DEA</label>
-            <input type="text" name="previous_school_dea_code" value="{{ old('previous_school_dea_code',$student->academicBackground->previous_school_dea_code??'') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="previous_school_dea_code" value="{{ old('previous_school_dea_code',$student->academicBackground->previous_school_dea_code??'') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
     </div>
 </div>
 
 {{-- STEP 5: Entorno y Actividades --}}
-<div class="wizard-step hidden bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100" data-step="5">
-    <h4 class="text-[#c56c39] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-        <span class="w-8 h-8 rounded-full bg-[#c56c39]/10 flex items-center justify-center mr-3">5</span>
+<div class="wizard-step hidden bg-white p-6 rounded-xl shadow-sm border border-gray-200" data-step="5">
+    <h4 class="text-[#FBC02D] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+        <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">5</span>
         Entorno Familiar y Actividades Recreativas
     </h4>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">¿Con quién vive el niño?</label>
-            <input type="text" name="lives_with" value="{{ old('lives_with',$student->lives_with??'') }}" placeholder="Ej: Ambos padres, Abuelos..." class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="text" name="lives_with" value="{{ old('lives_with',$student->lives_with??'') }}" placeholder="Ej: Ambos padres, Abuelos..." class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Cantidad de Hermanos</label>
-            <input type="number" name="siblings_count" min="0" max="30" value="{{ old('siblings_count',$student->siblings_count??0) }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/30 outline-none font-semibold">
+            <input type="number" name="siblings_count" min="0" max="30" value="{{ old('siblings_count',$student->siblings_count??0) }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
     </div>
 
@@ -212,7 +212,7 @@
             @foreach($activityCategories->keys() as $cat)
             <button type="button" onclick="switchActivityTab('{{ $cat }}')"
                 class="activity-tab px-5 py-2 rounded-xl text-xs font-bold border-2 transition-all
-                {{ $loop->first ? 'bg-[#032e5e] text-white border-[#032e5e]' : 'bg-white text-gray-500 border-gray-200 hover:border-[#032e5e]/40' }}"
+                {{ $loop->first ? 'bg-[#1A237E] text-white border-[#1A237E]' : 'bg-white text-gray-500 border-gray-200 hover:border-[#1A237E]/40' }}"
                 data-cat="{{ $cat }}">
                 {{ $cat }}
             </button>
@@ -243,9 +243,9 @@
 function switchActivityTab(cat) {
     document.querySelectorAll('.activity-tab').forEach(btn => {
         const active = btn.dataset.cat === cat;
-        btn.classList.toggle('bg-[#032e5e]', active);
+        btn.classList.toggle('bg-[#1A237E]', active);
         btn.classList.toggle('text-white', active);
-        btn.classList.toggle('border-[#032e5e]', active);
+        btn.classList.toggle('border-[#1A237E]', active);
         btn.classList.toggle('bg-white', !active);
         btn.classList.toggle('text-gray-500', !active);
         btn.classList.toggle('border-gray-200', !active);

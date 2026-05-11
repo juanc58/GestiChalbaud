@@ -1,18 +1,18 @@
 @extends('dashboard')
 
 @section('content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-full space-y-6">
 
     {{-- Header --}}
     <div class="mb-8 flex items-start justify-between gap-4">
         <div>
             <div class="flex items-center gap-3 mb-2">
-                <a href="{{ route('students.index') }}" class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#f83a3a]/10 hover:bg-[#f83a3a]/20 transition-colors group" title="Cancelar y volver">
-                    <svg fill="#f83a3a" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#f83a3a" class="group-hover:-translate-x-1 transition-transform">
+                <a href="{{ route('students.index') }}" class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#D32F2F]/10 hover:bg-[#D32F2F]/20 transition-colors group" title="Cancelar y volver">
+                    <svg fill="#D32F2F" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#D32F2F" class="group-hover:-translate-x-1 transition-transform">
                         <g><path d="M317.959,115.859H210.158V58.365h-44.864L0,223.66l165.294,165.294h44.864V331.46h136.548 c67.367,0,122.174,54.807,122.174,122.174H512V309.9C512,202.905,424.953,115.859,317.959,115.859z M468.88,342.412 c-30.253-33.206-73.82-54.071-122.174-54.071H167.038v41.378L60.981,223.661l106.057-106.057v41.375h150.921 c83.219,0,150.921,67.703,150.921,150.921V342.412z"></path></g>
                     </svg>
                 </a>
-                <h3 class="text-2xl font-extrabold text-[#032e5e]">Nueva Inscripción</h3>
+                <h3 class="text-2xl font-extrabold text-[#1A237E]">Nueva Inscripción</h3>
             </div>
             <p class="text-gray-500 font-semibold text-sm mt-1">Completa la ficha paso a paso.</p>
         </div>
@@ -29,17 +29,17 @@
     </div>
 
     {{-- Step Progress Bar --}}
-    <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 mb-8">
+    <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-8">
         <div class="flex items-center justify-between gap-2">
             @php $steps = ['Identidad','Salud','Ubicación','Académico','Entorno','Asignación']; @endphp
             @foreach($steps as $i => $label)
             <div class="flex flex-col items-center flex-1 cursor-pointer group" onclick="handleStepClick({{ $i+1 }})">
                 <div id="step-dot-{{ $i+1 }}"
                     class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all group-hover:scale-110
-                    {{ $i===0 ? 'bg-[#032e5e] text-white shadow-lg shadow-[#032e5e]/30' : 'bg-gray-100 text-gray-400' }}">
+                    {{ $i===0 ? 'bg-[#1A237E] text-white shadow-sm' : 'bg-gray-100 text-gray-400' }}">
                     {{ $i+1 }}
                 </div>
-                <span id="step-label-{{ $i+1 }}" class="text-[10px] font-bold mt-1 transition-all group-hover:text-[#032e5e] {{ $i===0 ? 'text-[#032e5e]' : 'text-gray-400' }}">{{ $label }}</span>
+                <span id="step-label-{{ $i+1 }}" class="text-[10px] font-bold mt-1 transition-all group-hover:text-[#1A237E] {{ $i===0 ? 'text-[#1A237E]' : 'text-gray-400' }}">{{ $label }}</span>
             </div>
             @if(!$loop->last)
             <div class="h-0.5 flex-1 bg-gray-100 rounded-full -mt-4" id="step-line-{{ $i+1 }}"></div>
@@ -56,15 +56,15 @@
         @include('students.partials.form_sections')
 
         {{-- STEP 6: Asignación --}}
-        <div class="wizard-step hidden bg-white p-8 rounded-[2.5rem] shadow-sm border border-[#032e5e]/20" data-step="6">
-            <h4 class="text-[#032e5e] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-                <span class="w-8 h-8 rounded-full bg-[#032e5e]/10 flex items-center justify-center mr-3">6</span>
+        <div class="wizard-step hidden bg-white p-8 rounded-xl shadow-sm border border-[#1A237E]/20" data-step="6">
+            <h4 class="text-[#1A237E] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
+                <span class="w-8 h-8 rounded-full bg-[#1A237E]/10 flex items-center justify-center mr-3">6</span>
                 Asignación de Aula y Representante
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-gray-400 uppercase ml-1">Aula de Destino <span class="text-red-500 section-req">*</span></label>
-                    <select name="section_id" id="section_id" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/20 outline-none font-bold text-[#032e5e] appearance-none">
+                    <select name="section_id" id="section_id" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none font-bold text-[#1A237E] appearance-none">
                         <option value="" disabled selected>Seleccione el aula...</option>
                         @foreach($sections as $s)
                             <option value="{{ $s->id }}" {{ old('section_id')==$s->id?'selected':'' }}>{{ $s->grade->name }} – "{{ $s->name }}" ({{ $s->shift }})</option>
@@ -79,7 +79,7 @@
         {{-- Wizard Navigation --}}
         <div class="flex items-center justify-between mt-8">
             <div class="flex items-center gap-4">
-                <a href="{{ route('students.index') }}" class="px-8 py-4 rounded-2xl font-bold bg-[#f83a3a] text-white hover:bg-[#f83a3a]/90 transition-all shadow-lg shadow-[#f83a3a]/20 flex items-center gap-2">
+                <a href="{{ route('students.index') }}" class="px-8 py-4 rounded-2xl font-bold bg-[#D32F2F] text-white hover:bg-[#D32F2F]/90 transition-all shadow-lg shadow-[#D32F2F]/20 flex items-center gap-2">
                     <svg fill="currentColor" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                         <g><path d="M317.959,115.859H210.158V58.365h-44.864L0,223.66l165.294,165.294h44.864V331.46h136.548 c67.367,0,122.174,54.807,122.174,122.174H512V309.9C512,202.905,424.953,115.859,317.959,115.859z M468.88,342.412 c-30.253-33.206-73.82-54.071-122.174-54.071H167.038v41.378L60.981,223.661l106.057-106.057v41.375h150.921 c83.219,0,150.921,67.703,150.921,150.921V342.412z"></path></g>
                     </svg>
@@ -91,10 +91,10 @@
             </div>
             
             <div class="flex items-center gap-4">
-                <button type="button" id="btn-next" onclick="wizardNext()" class="px-8 py-4 rounded-2xl font-bold bg-[#032e5e] text-white hover:bg-[#032e5e]/90 transition-all shadow-lg shadow-[#032e5e]/20">
+                <button type="button" id="btn-next" onclick="wizardNext()" class="px-8 py-4 rounded-2xl font-bold bg-[#1A237E] text-white hover:bg-[#1A237E]/90 transition-all shadow-sm">
                     Siguiente →
                 </button>
-                <button type="submit" id="btn-submit" class="hidden px-8 py-4 rounded-2xl font-bold bg-[#c56c39] text-white hover:bg-[#c56c39]/90 transition-all shadow-lg shadow-[#c56c39]/20">
+                <button type="submit" id="btn-submit" class="hidden px-8 py-4 rounded-2xl font-bold bg-[#FBC02D] text-[#1A237E] hover:bg-[#FBC02D]/90 transition-all shadow-lg shadow-sm">
                     ✓ Guardar Inscripción
                 </button>
             </div>
@@ -149,9 +149,9 @@ function wizardGo(n) {
         const done    = isEditMode ? (i < n) : (i < maxReachedStep);
         const active  = i === n;
         
-        dot.className = `w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all group-hover:scale-110 ${active ? 'bg-[#032e5e] text-white shadow-lg shadow-[#032e5e]/30' : done ? 'bg-[#c56c39] text-white' : 'bg-gray-100 text-gray-400'}`;
+        dot.className = `w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all group-hover:scale-110 ${active ? 'bg-[#1A237E] text-white shadow-sm' : done ? 'bg-[#FBC02D] text-[#1A237E]' : 'bg-gray-100 text-gray-400'}`;
         dot.textContent = done && !active ? '✓' : i;
-        if(label) label.className = `text-[10px] font-bold mt-1 transition-all group-hover:text-[#032e5e] ${active ? 'text-[#032e5e]' : done ? 'text-[#c56c39]' : 'text-gray-400'}`;
+        if(label) label.className = `text-[10px] font-bold mt-1 transition-all group-hover:text-[#1A237E] ${active ? 'text-[#1A237E]' : done ? 'text-[#FBC02D]' : 'text-gray-400'}`;
     }
     
     document.getElementById('btn-prev').classList.toggle('hidden', n === 1);

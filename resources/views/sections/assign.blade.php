@@ -5,20 +5,20 @@
     <div class="flex justify-between items-end">
         <div>
             <div class="flex items-center space-x-3 mb-2">
-                <a href="{{ route('sections.show', $section->id) }}" class="text-gray-400 hover:text-[#032e5e] transition-colors font-bold text-sm flex items-center">
+                <a href="{{ route('sections.show', $section->id) }}" class="text-gray-400 hover:text-[#1A237E] transition-colors font-bold text-sm flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     Volver al Aula
                 </a>
             </div>
-            <h3 class="text-3xl font-extrabold text-[#032e5e]">Asignación Masiva</h3>
+            <h3 class="text-3xl font-extrabold text-[#1A237E]">Asignación Masiva</h3>
             <p class="text-gray-500 font-semibold mt-1">
-                Inscribiendo en: <span class="text-[#032e5e]">{{ $section->grade->name }} "{{ $section->name }}"</span> 
+                Inscribiendo en: <span class="text-[#1A237E]">{{ $section->grade->name }} "{{ $section->name }}"</span> 
                 ({{ $section->shift }})
             </p>
         </div>
-        <div class="bg-white px-6 py-4 rounded-3xl shadow-sm border border-gray-100">
+        <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-gray-100">
             <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Periodo</div>
-            <div class="text-xl font-black text-[#032e5e]">{{ $currentYear }}</div>
+            <div class="text-xl font-black text-[#1A237E]">{{ $currentYear }}</div>
         </div>
     </div>
 
@@ -28,14 +28,14 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             <!-- Left Pane: Search & Available -->
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6">
                 <div class="flex justify-between items-center">
                     <h4 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">Disponibles</h4>
-                    <button type="button" onclick="addAll()" class="text-xs font-bold text-[#032e5e] hover:bg-[#032e5e]/5 px-3 py-1 rounded-lg transition-all">Agregar Visibles</button>
+                    <button type="button" onclick="addAll()" class="text-xs font-bold text-[#1A237E] hover:bg-[#1A237E]/5 px-3 py-1 rounded-lg transition-all">Agregar Visibles</button>
                 </div>
 
                 <div class="relative">
-                    <input type="text" id="studentSearch" placeholder="🔍 Buscar nombre o C.I..." class="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/20 outline-none transition-all font-semibold">
+                    <input type="text" id="studentSearch" placeholder="🔍 Buscar nombre o C.I..." class="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-semibold">
                 </div>
 
                 <div class="bg-gray-50/50 rounded-2xl border border-gray-100 overflow-hidden h-[450px] overflow-y-auto custom-scrollbar">
@@ -49,7 +49,7 @@
                                     <div class="font-bold text-gray-800 text-sm tracking-tight">{{ $student->last_name }}, {{ $student->first_name }}</div>
                                     <div class="text-[10px] font-bold text-gray-400 uppercase opacity-60">C.I. {{ $student->cedula ?? 'S/C' }}</div>
                                 </div>
-                                <div class="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-gray-300 group-hover:bg-[#032e5e] group-hover:text-white transition-all shadow-sm">
+                                <div class="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-gray-300 group-hover:bg-[#1A237E] group-hover:text-white transition-all shadow-sm">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                                 </div>
                             </div>
@@ -61,12 +61,12 @@
             </div>
 
             <!-- Right Pane: List to Enroll -->
-            <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-orange-100 space-y-6 relative overflow-hidden">
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-orange-100 space-y-6 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full -mr-16 -mt-16 opacity-50"></div>
                 
                 <div class="flex justify-between items-center relative z-10">
-                    <h4 class="text-xs font-bold text-[#c56c39] uppercase tracking-[0.2em]">Inscripción de Hoy</h4>
-                    <span id="selectedCount" class="px-3 py-1 bg-[#c56c39]/10 text-[#c56c39] rounded-full text-[10px] font-black">0 ALUMNOS</span>
+                    <h4 class="text-xs font-bold text-[#FBC02D] uppercase tracking-[0.2em]">Inscripción de Hoy</h4>
+                    <span id="selectedCount" class="px-3 py-1 bg-[#FBC02D]/10 text-[#FBC02D] rounded-full text-[10px] font-black">0 ALUMNOS</span>
                 </div>
 
                 <div class="bg-gray-50/50 rounded-2xl border-2 border-dashed border-[#c56c39]/10 h-[518px] overflow-y-auto custom-scrollbar p-2 relative z-10">
@@ -84,20 +84,20 @@
             </div>
         </div>
 
-        <div class="p-8 bg-[#032e5e]/5 rounded-[2.5rem] border border-[#032e5e]/10">
+        <div class="p-8 bg-[#1A237E]/5 rounded-xl border border-[#1A237E]/10">
             <div class="flex items-start space-x-6">
-                <div class="w-12 h-12 rounded-2xl bg-[#032e5e] text-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#032e5e]/20">
+                <div class="w-12 h-12 rounded-2xl bg-[#1A237E] text-white flex items-center justify-center flex-shrink-0 shadow-sm">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                 </div>
                 <div>
-                    <h5 class="font-black text-[#032e5e] text-lg">Protección de Trayectoria Académica</h5>
-                    <p class="text-sm text-gray-500 font-medium leading-relaxed mt-1">El filtro automático impide inscribir estudiantes en grados inferiores a los ya aprobados. Esto garantiza que la jerarquía <span class="text-[#c56c39] font-bold">Inicial < Primaria</span> se mantenga íntegra.</p>
+                    <h5 class="font-black text-[#1A237E] text-lg">Protección de Trayectoria Académica</h5>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed mt-1">El filtro automático impide inscribir estudiantes en grados inferiores a los ya aprobados. Esto garantiza que la jerarquía <span class="text-[#FBC02D] font-bold">Inicial < Primaria</span> se mantenga íntegra.</p>
                 </div>
             </div>
         </div>
 
         <div class="flex justify-end pt-4">
-            <button type="submit" id="submitBtn" disabled class="px-12 py-5 rounded-[2rem] font-bold bg-gray-100 text-gray-400 cursor-not-allowed transition-all shadow-xl text-lg flex items-center transform active:scale-95">
+            <button type="submit" id="submitBtn" disabled class="px-12 py-5 rounded-xl font-bold bg-gray-100 text-gray-400 cursor-not-allowed transition-all shadow-xl text-lg flex items-center transform active:scale-95">
                 Confirmar e Inscribir
                 <svg class="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
             </button>
@@ -173,12 +173,12 @@
             emptySelection.classList.add('hidden');
             submitBtn.disabled = false;
             submitBtn.classList.remove('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
-            submitBtn.classList.add('bg-[#032e5e]', 'text-white', 'hover:bg-[#032e5e]/90');
+            submitBtn.classList.add('bg-[#1A237E]', 'text-white', 'hover:bg-[#1A237E]/90');
         } else {
             emptySelection.classList.remove('hidden');
             submitBtn.disabled = true;
             submitBtn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed');
-            submitBtn.classList.remove('bg-[#032e5e]', 'text-white', 'hover:bg-[#032e5e]/90');
+            submitBtn.classList.remove('bg-[#1A237E]', 'text-white', 'hover:bg-[#1A237E]/90');
         }
     }
 

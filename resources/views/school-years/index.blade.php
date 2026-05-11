@@ -1,91 +1,114 @@
 @extends('dashboard')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-8">
-    <div class="flex justify-between items-center">
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-            <h3 class="text-3xl font-extrabold text-[#032e5e]">Gestión de Periodos Académicos</h3>
-            <p class="text-gray-500 font-semibold mt-1">Administra los años escolares del sistema Sepaez.</p>
+            <h2 class="text-2xl font-bold text-[#1A237E]">Años Escolares</h2>
+            <p class="text-sm text-gray-500 mt-1">Administra los periodos académicos del sistema.</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- New Year Form -->
-        <div class="md:col-span-1">
-            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
-                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Nuevo Periodo</h4>
+        <div class="lg:col-span-1">
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl p-6">
+                <h3 class="text-sm font-semibold text-[#1A237E] mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-[#FBC02D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                    Aperturar Nuevo Periodo
+                </h3>
                 <form action="{{ route('school-years.store') }}" method="POST" class="space-y-4">
                     @csrf
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-[#032e5e] ml-1">Año (ej: 2026-2027)</label>
-                        <input type="text" name="year" required placeholder="YYYY-YYYY" value="{{ old('year') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 {{ $errors->has('year') ? 'border-red-300' : 'border-transparent' }} focus:border-[#032e5e]/20 outline-none transition-all font-bold">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Año Escolar (ej: 2026-2027)</label>
+                        <input type="text" name="year" required placeholder="YYYY-YYYY" value="{{ old('year') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1A237E]/20 focus:border-[#1A237E] outline-none transition-all {{ $errors->has('year') ? 'border-[#D32F2F]' : '' }}">
                         @error('year')
-                            <p class="text-[10px] font-bold text-red-500 ml-1">{{ $message }}</p>
+                            <p class="text-[10px] text-[#D32F2F] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
-                    <button type="submit" class="w-full py-4 rounded-2xl font-bold bg-[#032e5e] text-white hover:bg-[#032e5e]/90 transition-all shadow-lg">
-                        Crear Año
+                    <button type="submit" class="w-full bg-[#1A237E] text-white text-sm font-medium py-2.5 rounded-lg hover:bg-[#1A237E]/90 transition-colors flex items-center justify-center gap-2">
+                        Registrar Año
                     </button>
                 </form>
+            </div>
+            
+            <!-- Info Box -->
+            <div class="mt-6 bg-[#FFF59D]/30 border border-[#FFF59D] rounded-xl p-4 flex items-start gap-3">
+                <svg class="w-5 h-5 text-[#FBC02D] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div>
+                    <h4 class="text-xs font-bold text-[#1A237E]">Sobre el Año Activo</h4>
+                    <p class="text-xs text-gray-600 mt-1 leading-relaxed">El periodo marcado como <strong>ACTIVO</strong> es el que se asocia por defecto a las inscripciones y vistas generales de aulas. Activa un nuevo año solo al iniciar un nuevo ciclo.</p>
+                </div>
             </div>
         </div>
 
         <!-- Years List -->
-        <div class="md:col-span-2">
-            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="bg-gray-50/50">
-                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Año Escolar</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Estatus Global</th>
-                            <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach($years as $y)
-                        <tr class="{{ $y->is_active ? 'bg-blue-50/30' : '' }}">
-                            <td class="px-6 py-4 font-black text-[#032e5e] tracking-tight text-lg">{{ $y->year }}</td>
-                            <td class="px-6 py-4 text-center">
-                                @if($y->is_active)
-                                    <span class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest">ACTIVO</span>
-                                @else
-                                    <span class="px-3 py-1 bg-gray-100 text-gray-400 rounded-full text-[10px] font-bold uppercase tracking-widest">Inactivo</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 flex justify-end space-x-2">
-                                @if(!$y->is_active)
-                                    <form action="{{ route('school-years.activate', $y->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="px-4 py-2 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all text-xs font-bold">
-                                            Activar Periodo
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('school-years.destroy', $y->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="p-2 text-gray-300 hover:text-red-500 transition-colors">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                        </button>
-                                    </form>
-                                @else
-                                    <span class="text-xs font-bold text-gray-300 px-4 py-2">Sin acciones</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="mt-6 p-6 bg-orange-50/50 rounded-3xl border border-orange-100">
-                <div class="flex items-start space-x-4">
-                    <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <div>
-                        <h5 class="font-bold text-orange-900 leading-tight">¿Para qué sirve el Año Activo?</h5>
-                        <p class="text-xs text-orange-700/80 leading-relaxed mt-1">El año marcado como **ACTIVO** es el que se asocia por defecto a las nuevas inscripciones de alumnos y el que se muestra en la vista principal de Aulas. Cambia el año activo solo cuando inicies un nuevo ciclo escolar.</p>
-                    </div>
+        <div class="lg:col-span-2">
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Año Escolar</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Estatus Global</th>
+                                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @forelse($years as $y)
+                            <tr class="hover:bg-gray-50 transition-colors {{ $y->is_active ? 'bg-[#1A237E]/5' : '' }}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-bold text-[#1A237E]">{{ $y->year }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    @if($y->is_active)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FBC02D]/20 text-[#1A237E] border border-[#FBC02D]/50">
+                                            ACTIVO
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                                            Cerrado
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    @if(!$y->is_active)
+                                        <div class="flex items-center justify-end gap-3">
+                                            <form action="{{ route('school-years.activate', $y->id) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                <button type="submit" class="text-[#1A237E] hover:text-[#1A237E]/80 transition-colors bg-[#1A237E]/10 px-3 py-1.5 rounded-md text-xs font-semibold">
+                                                    Establecer Activo
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('school-years.destroy', $y->id) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Seguro que deseas eliminar este periodo?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-gray-400 hover:text-[#D32F2F] transition-colors p-1" title="Eliminar">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <span class="text-xs text-gray-400 italic">En curso</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                        </div>
+                                        <h3 class="text-sm font-medium text-gray-900">No hay periodos académicos</h3>
+                                        <p class="text-sm text-gray-500 mt-1">Registra el primer año escolar para comenzar.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

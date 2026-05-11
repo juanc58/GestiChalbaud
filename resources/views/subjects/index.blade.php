@@ -1,14 +1,14 @@
 @extends('dashboard')
 
 @section('content')
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
             <div>
-                <h3 class="text-2xl font-extrabold text-[#032e5e]">Materias</h3>
+                <h3 class="text-2xl font-extrabold text-[#1A237E]">Materias</h3>
                 <p class="text-gray-500 font-semibold mt-1">Gestión global de materias impartidas en la institución.</p>
             </div>
             <a href="{{ route('subjects.create') }}"
-                class="bg-[#032e5e] text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-[#032e5e]/90 transition-all shadow-lg shadow-[#032e5e]/20 flex items-center">
+                class="bg-[#1A237E] text-white px-8 py-3 rounded-2xl font-bold text-sm hover:bg-[#1A237E]/90 transition-all shadow-sm flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -20,10 +20,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($subjects as $subject)
                     <div
-                        class="group bg-white p-6 rounded-3xl border-2 {{ $subject->is_active ? 'border-gray-50 hover:border-[#032e5e]/10' : 'border-red-50 opacity-75' }} transition-all relative overflow-hidden shadow-sm hover:shadow-md">
+                        class="group bg-white p-6 rounded-xl border-2 {{ $subject->is_active ? 'border-gray-50 hover:border-[#1A237E]/10' : 'border-red-50 opacity-75' }} transition-all relative overflow-hidden shadow-sm hover:shadow-md">
                         <div class="flex justify-between items-start mb-4">
                             <div
-                                class="p-3 rounded-2xl {{ $subject->is_active ? 'bg-blue-50 text-[#032e5e]' : 'bg-red-50 text-red-400' }}">
+                                class="p-3 rounded-2xl {{ $subject->is_active ? 'bg-blue-50 text-[#1A237E]' : 'bg-red-50 text-red-400' }}">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
@@ -32,7 +32,7 @@
                             </div>
                             <div class="flex space-x-2">
                                 <a href="{{ route('subjects.edit', $subject->id) }}"
-                                    class="p-2 text-gray-400 hover:text-[#032e5e] hover:bg-gray-50 rounded-xl transition-all"
+                                    class="p-2 text-gray-400 hover:text-[#1A237E] hover:bg-gray-50 rounded-xl transition-all"
                                     title="Editar">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -97,7 +97,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-full py-12 text-center bg-gray-50 rounded-3xl border-2 border-dashed border-gray-100">
+                    <div class="col-span-full py-12 text-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-100">
                         <div
                             class="p-4 bg-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-gray-100 italic text-gray-300">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">

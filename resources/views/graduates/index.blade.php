@@ -1,25 +1,25 @@
 @extends('dashboard')
 
 @section('content')
-<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
     <div class="p-6 border-b border-gray-50 bg-gray-50/50 flex justify-between items-center">
         <div class="mb-8">
-        <h3 class="text-2xl font-extrabold text-[#032e5e]">Egresados del Plantel</h3>
+        <h3 class="text-2xl font-extrabold text-[#1A237E]">Egresados del Plantel</h3>
         <p class="text-gray-500 font-semibold italic">Historial de alumnos que han culminado satisfactoriamente su etapa escolar.</p>
     </div>
-        <span class="px-4 py-1.5 bg-[#032e5e]/10 text-[#032e5e] rounded-xl text-xs font-extrabold tracking-widest">
+        <span class="px-4 py-1.5 bg-[#1A237E]/10 text-[#1A237E] rounded-xl text-xs font-extrabold tracking-widest">
             Total Histórico: {{ \App\Models\Graduate::count() }}
         </span>
     </div>
 
     <!-- Filter Bar -->
-    <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-6">
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
         <form action="{{ route('graduates.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o Cédula..." class="w-full px-5 py-2.5 rounded-xl bg-gray-50 border border-transparent outline-none focus:border-[#032e5e]/10 transition-all text-sm font-semibold">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre o Cédula..." class="w-full px-5 py-2.5 rounded-xl bg-gray-50 border border-transparent outline-none focus:border-[#1A237E]/10 transition-all text-sm font-semibold">
             </div>
             
-            <select name="year" class="px-5 py-2.5 rounded-xl bg-gray-50 border border-transparent outline-none focus:border-[#032e5e]/10 transition-all text-sm font-semibold appearance-none">
+            <select name="year" class="px-5 py-2.5 rounded-xl bg-gray-50 border border-transparent outline-none focus:border-[#1A237E]/10 transition-all text-sm font-semibold appearance-none">
                 <option value="">Todos los Años de Egreso</option>
                 @foreach($years as $y)
                     <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>Año Escolar: {{ $y }}</option>
@@ -27,7 +27,7 @@
             </select>
 
             <div class="flex gap-2">
-                <button type="submit" class="bg-[#032e5e] text-white px-8 py-2 rounded-xl font-bold text-sm hover:bg-[#032e5e]/90 transition-all flex-1">
+                <button type="submit" class="bg-[#1A237E] text-white px-8 py-2 rounded-xl font-bold text-sm hover:bg-[#1A237E]/90 transition-all flex-1">
                     Buscar
                 </button>
                 @if(request()->anyFilled(['search', 'year']))
@@ -64,7 +64,7 @@
                         {{ $graduate->notes ?? '-' }}
                     </td>
                     <td class="px-8 py-5 text-right">
-                            <a href="{{ route('students.show', ['student' => $graduate->student->id, 'from_graduates' => 1]) }}" class="px-4 py-2 bg-[#032e5e] text-white rounded-lg text-xs font-bold hover:bg-[#032e5e]/90 transition-all shadow-sm">
+                            <a href="{{ route('students.show', ['student' => $graduate->student->id, 'from_graduates' => 1]) }}" class="px-4 py-2 bg-[#1A237E] text-white rounded-lg text-xs font-bold hover:bg-[#1A237E]/90 transition-all shadow-sm">
                                 Ver Ficha Histórica
                             </a>
                     </td>

@@ -2,18 +2,18 @@
 
 @section('content')
 <div class="mb-8">
-    <h3 class="text-2xl font-extrabold text-[#032e5e]">Gestión Global de Usuarios</h3>
+    <h3 class="text-2xl font-extrabold text-[#1A237E]">Gestión Global de Usuarios</h3>
     <p class="text-gray-500 font-semibold">Administra todos los accesos al sistema S.E. Páez.</p>
 </div>
 
-<div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
     <div class="p-6 border-b border-gray-50 flex flex-col md:flex-row gap-4 bg-gray-50/50 items-center justify-between">
         <form action="{{ route('users.index') }}" method="GET" class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
             <div class="relative md:col-span-2">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, Cédula o Email..." class="w-full px-5 py-2.5 rounded-xl bg-white border border-gray-200 outline-none focus:border-[#032e5e]/20 transition-all text-sm font-semibold">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nombre, Cédula o Email..." class="w-full px-5 py-2.5 rounded-xl bg-white border border-gray-200 outline-none focus:border-[#1A237E]/20 transition-all text-sm font-semibold">
             </div>
             
-            <select name="role" class="px-5 py-2.5 rounded-xl bg-white border border-gray-200 outline-none focus:border-[#032e5e]/20 transition-all text-sm font-semibold appearance-none">
+            <select name="role" class="px-5 py-2.5 rounded-xl bg-white border border-gray-200 outline-none focus:border-[#1A237E]/20 transition-all text-sm font-semibold appearance-none">
                 <option value="">Todos los Roles</option>
                 @foreach($roles as $role)
                     <option value="{{ $role->id }}" {{ request('role') == $role->id ? 'selected' : '' }}>{{ ucfirst($role->name) }}</option>
@@ -21,7 +21,7 @@
             </select>
 
             <div class="flex gap-2">
-                <button type="submit" class="bg-[#032e5e] text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-[#032e5e]/90 transition-all flex-1 shadow-md shadow-[#032e5e]/20">
+                <button type="submit" class="bg-[#1A237E] text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-[#1A237E]/90 transition-all flex-1 shadow-md shadow-[#1A237E]/20">
                     Buscar
                 </button>
                 @if(request()->anyFilled(['search', 'role', 'status']))
@@ -49,7 +49,7 @@
                 <tr class="hover:bg-blue-50/30 transition-colors {{ !$user->is_active ? 'opacity-70 bg-red-50/30' : '' }}">
                     <td class="px-6 py-4">
                         <div class="flex flex-col">
-                            <span class="font-bold text-[#032e5e]">{{ $user->full_name }}</span>
+                            <span class="font-bold text-[#1A237E]">{{ $user->full_name }}</span>
                             <span class="text-xs font-semibold text-gray-400">CI: {{ $user->cedula }}</span>
                             @if($user->email)
                                 <span class="text-[10px] font-bold text-gray-400">{{ $user->email }}</span>

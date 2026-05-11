@@ -3,22 +3,22 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="mb-8 flex items-center space-x-4">
-        <a href="{{ route('sections.index') }}" class="p-3 bg-white rounded-xl shadow-sm border border-gray-100 text-gray-500 hover:text-[#032e5e] transition-colors">
+        <a href="{{ route('sections.index') }}" class="p-3 bg-white rounded-xl shadow-sm border border-gray-200 text-gray-500 hover:text-[#1A237E] transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         </a>
         <div>
-            <h3 class="text-2xl font-extrabold text-[#032e5e]">Editar Sección</h3>
+            <h3 class="text-2xl font-extrabold text-[#1A237E]">Editar Sección</h3>
             <p class="text-gray-500 font-semibold">Modifica los detalles del aula: {{ $section->grade->name }} "{{ $section->name }}"</p>
         </div>
     </div>
 
-    <form action="{{ route('sections.update', $section->id) }}" method="POST" class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 space-y-6">
+    <form action="{{ route('sections.update', $section->id) }}" method="POST" class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6">
         @csrf
         @method('PUT')
 
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Grado Académico</label>
-            <select name="grade_id" required class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 {{ $errors->has('grade_id') ? 'border-red-300' : 'border-transparent' }} focus:border-[#032e5e]/20 outline-none transition-all font-semibold appearance-none">
+            <select name="grade_id" required class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 {{ $errors->has('grade_id') ? 'border-red-300' : 'border-transparent' }} focus:border-[#1A237E]/20 outline-none transition-all font-semibold appearance-none">
                 @foreach($grades as $grade)
                     <option value="{{ $grade->id }}" {{ (old('grade_id', $section->grade_id) == $grade->id) ? 'selected' : '' }}>{{ $grade->name }}</option>
                 @endforeach
@@ -31,7 +31,7 @@
         <div class="grid grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">Letra de la Sección</label>
-                <input type="text" name="name" placeholder="Ej: A, B, U" required maxlength="2" value="{{ old('name', $section->name) }}" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 {{ $errors->has('name') ? 'border-red-300' : 'border-transparent' }} focus:border-[#032e5e]/20 outline-none transition-all font-bold text-xl uppercase text-center text-[#032e5e]">
+                <input type="text" name="name" placeholder="Ej: A, B, U" required maxlength="2" value="{{ old('name', $section->name) }}" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 {{ $errors->has('name') ? 'border-red-300' : 'border-transparent' }} focus:border-[#1A237E]/20 outline-none transition-all font-bold text-xl uppercase text-center text-[#1A237E]">
                 @error('name')
                     <p class="text-[10px] font-bold text-red-500 text-center">{{ $message }}</p>
                 @enderror
@@ -39,7 +39,7 @@
             
             <div class="space-y-2">
                 <label class="text-xs font-bold text-gray-400 uppercase ml-1">Turno</label>
-                <select name="shift" required class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/20 outline-none transition-all font-semibold appearance-none">
+                <select name="shift" required class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-semibold appearance-none">
                     <option value="Mañana" {{ old('shift', $section->shift) == 'Mañana' ? 'selected' : '' }}>Mañana</option>
                     <option value="Tarde" {{ old('shift', $section->shift) == 'Tarde' ? 'selected' : '' }}>Tarde</option>
                     <option value="Integral" {{ old('shift', $section->shift) == 'Integral' ? 'selected' : '' }}>Integral</option>
@@ -49,7 +49,7 @@
 
         @if(auth()->user()->role->name === 'admin')
         <div class="space-y-2 pt-4">
-            <label class="text-xs font-black text-[#c56c39] uppercase ml-1 tracking-widest">Profesor Encargado (Año {{ $currentYear }})</label>
+            <label class="text-xs font-black text-[#FBC02D] uppercase ml-1 tracking-widest">Profesor Encargado (Año {{ $currentYear }})</label>
             <select name="teacher_id" class="w-full px-5 py-4 rounded-2xl bg-orange-50/50 border-2 border-orange-100 focus:border-[#c56c39]/30 outline-none transition-all font-bold text-gray-700 appearance-none">
                 <option value="">Sin profesor asignado</option>
                 @foreach($teachers as $teacher)
@@ -66,7 +66,7 @@
         @endif
 
         <div class="pt-4 mt-6 border-t border-gray-100">
-            <button type="submit" class="w-full py-4 rounded-2xl font-bold bg-[#c56c39] text-white hover:bg-[#c56c39]/90 transition-all shadow-xl shadow-[#c56c39]/20 text-lg">
+            <button type="submit" class="w-full py-4 rounded-2xl font-bold bg-[#FBC02D] text-[#1A237E] hover:bg-[#FBC02D]/90 transition-all shadow-xl shadow-sm text-lg">
                 Actualizar Sección
             </button>
         </div>

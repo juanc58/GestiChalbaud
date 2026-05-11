@@ -4,12 +4,12 @@
     <!-- Search Input -->
     <div class="relative group">
         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <svg class="h-4 w-4 text-gray-400 group-focus-within:text-[#032e5e] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-4 w-4 text-gray-400 group-focus-within:text-[#1A237E] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
         </div>
         <input type="text" id="rep-search-input" placeholder="Buscar por Nombre o Cédula..." 
-            class="w-full pl-11 pr-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#032e5e]/20 outline-none transition-all font-bold text-[#032e5e]"
+            class="w-full pl-11 pr-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]"
             autocomplete="off">
         <input type="hidden" name="representative_id" id="selected-rep-id" value="{{ $currentRepId ?? old('representative_id') }}">
     </div>
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             div.innerHTML = `
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-extrabold text-[#032e5e] group-hover:text-blue-700">${repFullName}</p>
+                        <p class="text-sm font-extrabold text-[#1A237E] group-hover:text-blue-700">${repFullName}</p>
                         <p class="text-[10px] font-bold text-gray-400 group-hover:text-blue-500 uppercase tracking-widest">${rep.relationship || 'Representante'}</p>
                     </div>
                     <span class="text-[10px] font-black text-gray-300 group-hover:text-blue-300">CI: ${u.cedula || 'N/A'}</span>
