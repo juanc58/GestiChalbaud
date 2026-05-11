@@ -21,15 +21,33 @@ Los colores seleccionados mantienen la coherencia con la simbología patria y es
 | **Amarillo Sol** | 🟨 | `#FBC02D` | Iconografía secundaria, estados de "Pendiente" y resaltados visuales. |
 | **Crema / Beige** | 🟨 | `#FFF59D` | Fondos de formularios, contenedores de datos y áreas de lectura suave. |
 
-## 3. Pautas de Aplicación en la Interfaz (UI)
-Para garantizar una experiencia de usuario (UX) profesional y coherente con el entorno de la institución:
+## 3. Pautas de Aplicación en la Interfaz (UI) - Arquitectura SaaS
+Para garantizar una experiencia de usuario (UX) moderna, escalable y profesional, el sistema utiliza una arquitectura tipo **SaaS Dashboard (App Shell)** construida con **Tailwind CSS**.
 
-1.  **Encabezado:** Se recomienda un fondo en **Azul Marino (`#1A237E`)** con el logo del colegio ubicado a la izquierda y texto en blanco para máximo contraste.
-2.  **Botones de Acción:**
-    *   *Guardar/Confirmar:* Azul Marino.
-    *   *Eliminar/Cancelar:* Rojo Institucional.
-3.  **Tipografía:** Se sugiere el uso de fuentes tipo Sans-Serif (como Roboto o Inter) para mantener la modernidad del sistema web basado en **Laravel y Bootstrap** [5].
-4.  **Fondos:** Utilizar el **Crema Suave (`#FFF59D`)** en las tarjetas de información (cards) para reducir la fatiga visual del personal administrativo que maneja grandes volúmenes de datos [2, 6, 7].
+### 3.1 Estructura Principal (Layout)
+1. **Contenedor Raíz Inmutable:** El `body` de la aplicación carece de scroll global. Se utiliza `flex h-screen bg-[#F9FAFB] overflow-hidden` para congelar la pantalla, delegando el scroll exclusivamente al área de contenido principal. Esto mantiene la barra lateral y superior siempre fijas.
+2. **Sidebar (Navegación Lateral):** 
+   * Diseño limpio con fondo blanco y bordes derechos sutiles (`border-r border-gray-200`).
+   * Separado en categorías con títulos en mayúscula (GENERAL, ADMINISTRACIÓN, DOCENCIA).
+   * **Estados Activos:** Usan el Azul Marino Institucional combinado con un fondo suave (ej. `bg-indigo-50`). Los inactivos usan tonos grises con transición al hacer hover.
+   * El *footer* del sidebar se mantiene anclado en la parte inferior conteniendo los accesos de Perfil y Cerrar Sesión.
+3. **Navbar Contextual (Top Bar):**
+   * Incorpora *Breadcrumbs* que muestran dinámicamente en qué módulo se encuentra el usuario.
+   * Incluye un indicador de "Sesión Activa" en verde y un Avatar circular con iniciales usando el fondo Azul Marino.
+4. **Área de Contenido (Content Area):**
+   * Posee su propio scroll independiente (`overflow-y-auto`).
+   * El contenedor interno está centrado y topado (`mx-auto max-w-[1600px]`) para evitar deformaciones en pantallas ultrawide, manteniendo las proporciones ideales de lectura.
+
+### 3.2 Componentes Modernizados
+1. **Tarjetas y Widgets:** Se abandonaron las sombras pesadas y bordes redondeados extremos. El estándar actual exige:
+   * Radios de borde medios: `rounded-xl`
+   * Sombras sutiles y elegantes: `shadow-sm`
+   * Bordes finos de separación: `border border-gray-200`
+2. **Botones de Acción:**
+   * *Acción Primaria (Crear/Avanzar):* Amarillo Sol (`#FBC02D`) con texto oscuro o Azul Marino para resaltar en la jerarquía visual.
+   * *Acción Destructiva/Secundaria (Eliminar/Cancelar):* Rojo Institucional (`#D32F2F`) o textos grises (`text-gray-500`).
+3. **Estados Vacíos (Empty States):**
+   * Módulos o paneles sin datos deben mostrar un contenedor de estado vacío con fondo gris tenue (`bg-gray-50`), bordes punteados discretos y un texto orientativo, evitando espacios en blanco que denoten error.
 
 ## 4. Archivos Relacionados
 *   **Logo original:** `logo.jpeg` [2, 8].

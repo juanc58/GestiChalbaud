@@ -17,8 +17,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(\Illuminate\Http\Request $request): void
     {
-        //
+        // Forzamos HTTPS si la solicitud pasó por un túnel proxy
+        if ($request->server('HTTP_X_FORWARDED_PROTO') === 'https' || $request->header('x-forwarded-proto') === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }

@@ -336,7 +336,7 @@ updateAllergyLabel();
         selM.disabled=true; selP.disabled=true;
         selM.innerHTML='<option value="">Cargando...</option>'; selP.innerHTML='<option value="">Seleccione un municipio...</option>';
         if(!this.value) return;
-        fetch(`/api/locations/states/${this.value}/municipalities`).then(r=>r.json()).then(d=>{
+        fetch(`{{ url('/api/locations/states') }}/${this.value}/municipalities`).then(r=>r.json()).then(d=>{
             const mid = fillFallback(selM, d, savedM, savedMName, 'Seleccione un municipio...');
             if(mid) {
                 selM.value = mid;
@@ -348,7 +348,7 @@ updateAllergyLabel();
         hidM.value = this.options[this.selectedIndex]?.text || '';
         selP.disabled=true; selP.innerHTML='<option value="">Cargando...</option>';
         if(!this.value) return;
-        fetch(`/api/locations/municipalities/${this.value}/parishes`).then(r=>r.json()).then(d=>{
+        fetch(`{{ url('/api/locations/municipalities') }}/${this.value}/parishes`).then(r=>r.json()).then(d=>{
             const pid = fillFallback(selP, d, savedP, savedPName, 'Seleccione una parroquia...');
             if(pid) selP.value = pid;
         });
@@ -372,7 +372,7 @@ updateAllergyLabel();
         selBirthM.disabled=true;
         selBirthM.innerHTML='<option value="">Cargando...</option>';
         if(!this.value) return;
-        fetch(`/api/locations/states/${this.value}/municipalities`).then(r=>r.json()).then(d=>{
+        fetch(`{{ url('/api/locations/states') }}/${this.value}/municipalities`).then(r=>r.json()).then(d=>{
             fillByName(selBirthM, d, savedBirthMName, 'Seleccione municipio de nacimiento...');
         });
     });
