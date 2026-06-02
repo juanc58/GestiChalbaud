@@ -126,7 +126,7 @@ class SectionController extends Controller
             $q->where('school_year', $currentYear);
         })->orWhereHas('assignments', function($q) use ($currentYear, $section) {
             $q->where('school_year', $currentYear)->where('section_id', $section->id);
-        })->orderBy('first_name')->get();
+        })->get()->sortBy('first_name')->values();
 
         return view('sections.edit', compact('section', 'grades', 'teachers', 'currentYear'));
     }

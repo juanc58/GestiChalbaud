@@ -2,26 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Models\Representative;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Representative>
- */
 class RepresentativeFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Representative::class;
+
     public function definition(): array
     {
         return [
-            'cedula' => $this->faker->unique()->numberBetween(10000000, 25000000),
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'phone_whatsapp' => $this->faker->phoneNumber(),
-            'relationship' => $this->faker->randomElement(['Madre', 'Padre', 'Abuela', 'Tío']),
+            'user_id' => User::factory()->create([
+                'role_id' => Role::where('name', 'representative')->first()?->id ?? 3
+            ])->id,
+            'phone_whatsapp' => fake()->phoneNumber(),
+            'relationship' => fake()->randomElement(['Madre', 'Padre', 'Abuela', 'Tío']),
         ];
     }
 }

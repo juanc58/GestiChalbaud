@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <form action="{{ route('students.store') }}" method="POST" id="student-form" class="space-y-8">
+    <form action="{{ route('students.store') }}" method="POST" id="student-form" class="space-y-8" novalidate>
         @csrf
         <input type="hidden" name="is_historical_graduate" id="is_historical_graduate" value="0">
 

@@ -40,7 +40,7 @@
         </div>
     </div>
 
-    <form action="{{ route('students.update', $student->id) }}" method="POST" id="student-form" class="space-y-8">
+    <form action="{{ route('students.update', $student->id) }}" method="POST" id="student-form" class="space-y-8" novalidate>
         @csrf
         @method('PUT')
 
