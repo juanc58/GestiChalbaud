@@ -1,12 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "gestichalbaud/gestichalbaud",
+    "name": "infochalbaud/infochalbaud",
     "type": "project",
     "description": "Sistema de Gestión Académica - U.E.B. Coronel Carlos Delgado Chalbaud",
     "keywords": ["laravel", "educacion", "gestion-escolar"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },

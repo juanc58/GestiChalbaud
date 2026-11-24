@@ -1,4 +1,4 @@
-# Requerimientos de Datos Personales - Sistema de Gestión Escolar U.E.D. "Páez"
+# Requerimientos de Datos Personales - GestiChalbaud
 
 Este documento consolida los campos y categorías de datos necesarios para la automatización de los procesos de inscripción, seguimiento pedagógico y administración del plantel [2-4].
 

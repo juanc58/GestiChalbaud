@@ -25,26 +25,47 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="group space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Cédula de Identidad</label>
+                    <input type="text" name="cedula" inputmode="numeric" value="{{ old('cedula', $representative->cedula) }}"
+                        oninput="this.value = this.value.replace(/\D/g, '')"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                    @error('cedula')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
+                </div>
+                <div class="group space-y-2">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Parentesco</label>
+                    @php $relVal = old('relationship', $representative->relationship ?? 'Madre'); @endphp
+                    <select name="relationship" required
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] appearance-none">
+                        @foreach(['Madre', 'Padre', 'Abuela', 'Abuelo', 'Tía', 'Tío', 'Hermana/o Mayor', 'Representante Legal'] as $rel)
+                            <option value="{{ $rel }}" {{ $relVal === $rel ? 'selected' : '' }}>{{ $rel }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Nombre</label>
                     <input type="text" name="first_name" value="{{ old('first_name', $representative->first_name) }}" required
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                     @error('first_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Nombre</label>
                     <input type="text" name="second_name" value="{{ old('second_name', $representative->second_name) }}"
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Apellido</label>
                     <input type="text" name="last_name" value="{{ old('last_name', $representative->last_name) }}" required
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                     @error('last_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Apellido</label>
                     <input type="text" name="second_last_name" value="{{ old('second_last_name', $representative->second_last_name) }}"
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
             </div>
         </div>
@@ -58,23 +79,25 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="group space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono Principal (Whatsapp)</label>
-                    <input type="text" name="phone_whatsapp" value="{{ old('phone_whatsapp', $representative->phone_whatsapp) }}" required
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono Principal <span class="text-red-500">*</span></label>
+                    <input type="text" name="phone_whatsapp" value="{{ old('phone_whatsapp', $representative->phone_whatsapp) }}" required placeholder="Ej: 04121234567"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#c56c39]/20 outline-none transition-all font-bold text-[#1A237E]">
                     @error('phone_whatsapp')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono Secundario (Opcional)</label>
-                    <input type="text" name="phone_local" value="{{ old('phone_local', $representative->phone_local) }}"
+                    <input type="text" name="phone_local" value="{{ old('phone_local', $representative->phone_local) }}" placeholder="Ej: 02121234567"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#c56c39]/20 outline-none transition-all font-bold text-[#1A237E]">
+                    @error('phone_local')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="group space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
-                    <input type="email" name="email" value="{{ old('email', $representative->email) }}"
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico <span class="text-red-500">*</span></label>
+                    <input type="email" name="email" value="{{ old('email', $representative->email) }}" required placeholder="nombre@correo.com"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#c56c39]/20 outline-none transition-all font-bold text-[#1A237E]">
+                    @error('email')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div class="group space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Facebook / RS</label>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Red Social</label>
                     <input type="text" name="facebook" value="{{ old('facebook', $representative->facebook) }}"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#c56c39]/20 outline-none transition-all font-bold text-[#1A237E]">
                 </div>

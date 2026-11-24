@@ -3,7 +3,7 @@
 @section('content')
 <div class="mb-8">
     <h3 class="text-2xl font-extrabold text-[#1A237E]">Directorio de Representantes</h3>
-    <p class="text-gray-500 font-semibold">Base de datos de padres y representantes registrados en S.E. Páez.</p>
+    <p class="text-gray-500 font-semibold">Base de datos de padres y representantes registrados en Infochalbaud.</p>
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -14,11 +14,11 @@
             </div>
 
             <div class="flex gap-2">
-                <button type="submit" class="bg-[#FBC02D] text-[#1A237E] px-6 py-2 rounded-xl font-bold text-sm hover:bg-[#FBC02D]/90 transition-all flex-1 shadow-md shadow-sm">
+                <button type="submit" class="bg-[#FBC02D] text-[#1A237E] px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#FBC02D]/90 transition-all flex-1 shadow-sm">
                     Buscar
                 </button>
                 @if(request()->filled('search'))
-                    <a href="{{ route('representatives.index') }}" class="bg-white border border-gray-200 text-gray-400 p-2.5 rounded-xl hover:bg-gray-50 transition-all hover:text-red-500" title="Limpiar Búsqueda">
+                    <a href="{{ route('representatives.index') }}" class="bg-white border border-gray-200 text-gray-400 p-2.5 rounded-xl hover:bg-gray-50 transition-all hover:text-red-500 flex items-center justify-center" title="Limpiar Búsqueda">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </a>
                 @endif
@@ -42,11 +42,11 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center">
                             <div class="w-10 h-10 rounded-full bg-orange-100 text-[#FBC02D] flex items-center justify-center font-bold mr-3 border border-orange-200">
-                                {{ substr($rep->first_name, 0, 1) }}{{ substr($rep->last_name, 0, 1) }}
+                                {{ substr($rep->first_name ?? 'R', 0, 1) }}{{ substr($rep->last_name ?? '', 0, 1) }}
                             </div>
                             <div class="flex flex-col">
-                                <span class="font-bold text-[#1A237E]">{{ $rep->first_name }} {{ $rep->last_name }}</span>
-                                <span class="text-xs font-semibold text-gray-400">CI: {{ $rep->cedula }}</span>
+                                <span class="font-bold text-[#1A237E]">{{ $rep->full_name }}</span>
+                                <span class="text-xs font-semibold text-gray-400">CI: {{ $rep->cedula ?: 'S/C' }} · {{ $rep->relationship }}</span>
                             </div>
                         </div>
                     </td>
@@ -66,13 +66,15 @@
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-blue-200">
-                            {{ $rep->enrollments->count() }} Estudiante(s)
+                            {{ $rep->students_count }} Estudiante(s)
                         </span>
                     </td>
-                    <td class="px-6 py-4 flex items-center space-x-3">
-                        <a href="{{ route('representatives.edit', $rep->id) }}" class="p-2 text-[#FBC02D] hover:text-[#1A237E] hover:bg-orange-50 rounded-xl transition-all" title="Ver y Editar Ficha">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        </a>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="inline-flex items-center space-x-3">
+                            <a href="{{ route('representatives.edit', $rep->id) }}" class="p-2 text-[#FBC02D] hover:text-[#1A237E] hover:bg-orange-50 rounded-xl transition-all inline-flex items-center" title="Ver y Editar Ficha">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 @empty

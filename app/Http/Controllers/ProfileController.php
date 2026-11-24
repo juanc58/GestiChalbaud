@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function edit()
     {
-        $user = auth()->user()->load('teacher', 'representative');
+        $user = auth()->user()->load('teacher');
         $securityQuestions = SecurityQuestion::all();
         $userSecurityAnswer = UserSecurityAnswer::where('user_id', $user->id)->with('question')->first();
         return view('profile.edit', compact('user', 'securityQuestions', 'userSecurityAnswer'));
@@ -23,21 +23,13 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $rules = [
-            'first_name'       => 'required|string|max:255',
-            'second_name'      => 'nullable|string|max:255',
-            'last_name'        => 'required|string|max:255',
-            'second_last_name' => 'nullable|string|max:255',
-            'phone'            => 'nullable|string|max:50',
-            'email'            => 'nullable|email|unique:users,email,' . $user->id,
+            'first_name'       => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_name'      => ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'last_name'        => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_last_name' => ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'phone'            => ['required', 'string', 'max:50', new \App\Rules\VenezuelanPhone()],
+            'email'            => ['required', 'string', 'max:255', new \App\Rules\StrictEmail(), 'unique:users,email,' . $user->id],
         ];
-
-        if ($user->isRepresentative()) {
-            $rules['phone_whatsapp']    = 'required|string|max:50';
-            $rules['phone_local']       = 'nullable|string|max:50';
-            $rules['facebook']          = 'nullable|string|max:255';
-            $rules['job_title']         = 'nullable|string|max:255';
-            $rules['workplace_address'] = 'nullable|string';
-        }
 
         if ($user->isDocente()) {
             $rules['academic_degree'] = 'nullable|string|max:255';
@@ -56,8 +48,8 @@ class ProfileController extends Controller
             'second_name'      => $request->second_name,
             'last_name'        => $request->last_name,
             'second_last_name' => $request->second_last_name,
-            'phone'            => $request->phone,
-            'email'            => $request->email,
+            'phone'            => \App\Rules\VenezuelanPhone::normalize($request->phone),
+            'email'            => mb_strtolower(trim($request->email), 'UTF-8'),
         ]);
 
         // Update security question if provided
@@ -72,17 +64,9 @@ class ProfileController extends Controller
         }
 
         // Update role-specific fields
-        if ($user->isDocente() && $user->teacher) {
+        if ($user->isDocente() && $user->teacher && $request->has('academic_degree')) {
             $user->teacher->update([
                 'academic_degree' => $request->academic_degree,
-            ]);
-        } elseif ($user->isRepresentative() && $user->representative) {
-            $user->representative->update([
-                'phone_whatsapp'    => $request->phone_whatsapp,
-                'phone_local'       => $request->phone_local,
-                'facebook'          => $request->facebook,
-                'job_title'         => $request->job_title,
-                'workplace_address' => $request->workplace_address,
             ]);
         }
 

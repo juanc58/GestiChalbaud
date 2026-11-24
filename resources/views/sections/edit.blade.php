@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        @if(auth()->user()->role->name === 'admin')
+        @if(auth()->user()->isSuperAdmin())
         <div class="space-y-2 pt-4">
             <label class="text-xs font-black text-[#FBC02D] uppercase ml-1 tracking-widest">Profesor Encargado (Año {{ $currentYear }})</label>
             <select name="teacher_id" class="w-full px-5 py-4 rounded-2xl bg-orange-50/50 border-2 border-orange-100 focus:border-[#c56c39]/30 outline-none transition-all font-bold text-gray-700 appearance-none">

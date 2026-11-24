@@ -47,6 +47,21 @@
             </div>
         </div>
 
+        @if(auth()->user()->isSuperAdmin())
+        <div class="space-y-2 pt-2">
+            <label class="text-xs font-black text-[#FBC02D] uppercase ml-1 tracking-widest">Profesor Encargado (Año {{ $currentYear }} — Opcional)</label>
+            <select name="teacher_id" class="w-full px-5 py-4 rounded-2xl bg-orange-50/50 border-2 border-orange-100 focus:border-[#c56c39]/30 outline-none transition-all font-bold text-gray-700 appearance-none">
+                <option value="">Sin profesor asignado por ahora</option>
+                @foreach($teachers as $teacher)
+                    <option value="{{ $teacher->id }}" {{ old('teacher_id') == $teacher->id ? 'selected' : '' }}>
+                        {{ $teacher->full_name }} (V-{{ $teacher->cedula }})
+                    </option>
+                @endforeach
+            </select>
+            <p class="text-[10px] font-bold text-gray-400 ml-1 italic">* Todo usuario aprobado con rol Docente aparece automáticamente disponible aquí.</p>
+        </div>
+        @endif
+
         <div class="pt-4 mt-6 border-t border-gray-100">
             <button type="submit" class="w-full py-4 rounded-2xl font-bold bg-[#1A237E] text-white hover:bg-[#1A237E]/90 transition-all shadow-xl shadow-[#1A237E]/20 text-lg">
                 Registrar Sección

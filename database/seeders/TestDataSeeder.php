@@ -30,6 +30,7 @@ class TestDataSeeder extends Seeder
             Address::factory()->create(['student_id' => $student->id]);
             
             $representative = Representative::factory()->create();
+            $student->update(['representative_id' => $representative->id]);
             
             Enrollment::factory()->create([
                 'student_id' => $student->id,

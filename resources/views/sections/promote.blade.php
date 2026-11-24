@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-6xl mx-auto space-y-8">
     <!-- Header -->
-    <div class="flex justify-between items-end">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
             <div class="flex items-center space-x-3 mb-2">
                 <a href="{{ route('sections.show', $section->id) }}" class="text-gray-400 hover:text-[#1A237E] transition-colors font-bold text-sm flex items-center">
@@ -29,7 +29,7 @@
         </div>
         <div>
             <h5 class="font-bold text-blue-900 leading-tight">Proceso de Promoción Seguro</h5>
-            <p class="text-xs text-blue-700/80 leading-relaxed mt-1">Este proceso **NO** cerrará el sistema globalmente. Podrás seguir trabajando en otras aulas del {{ $currentYear }}. Cuando termines con todas, activa manualmente el año {{ $nextYear }} en el menú de Años Escolares.</p>
+            <p class="text-xs text-blue-700/80 leading-relaxed mt-1">Este proceso <strong>NO</strong> cerrará el sistema globalmente. Podrás seguir trabajando en otras aulas del {{ $currentYear }}. Cuando termines con todas, activa manualmente el año {{ $nextYear }} en el menú de Años Escolares.</p>
         </div>
     </div>
 
@@ -39,7 +39,7 @@
         <input type="hidden" name="next_school_year" value="{{ $nextYear }}">
 
         <!-- Multi-Pane Layout -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 h-[650px]">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:h-[650px]">
             
             <!-- Left Pane: Students to Process -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col space-y-6">
@@ -57,8 +57,9 @@
                         @foreach($section->enrollments as $enrollment)
                             <div class="student-item p-4 hover:bg-white transition-all cursor-pointer group flex items-center justify-between" 
                                  id="enrollment_{{ $enrollment->id }}"
-                                 onclick="openConfig({{ $enrollment->id }}, '{{ $enrollment->student->last_name }}, {{ $enrollment->student->first_name }}', '{{ $enrollment->student->cedula ?? 'S/C' }}')"
-                                 data-search="{{ strtolower($enrollment->student->last_name . ' ' . $enrollment->student->cedula) }}">
+                                 data-summary="{{ $enrollment->pedagogical_summary ?? $enrollment->recommendations ?? '' }}"
+                                 onclick="openConfig({{ $enrollment->id }}, '{{ addslashes($enrollment->student->last_name . ', ' . $enrollment->student->first_name) }}', '{{ $enrollment->student->cedula ?? 'S/C' }}')"
+                                 data-search="{{ strtolower($enrollment->student->last_name . ' ' . $enrollment->student->first_name . ' ' . $enrollment->student->cedula) }}">
                                 <div>
                                     <div class="font-bold text-gray-800 text-sm tracking-tight">{{ $enrollment->student->last_name }}, {{ $enrollment->student->first_name }}</div>
                                     <div class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter opacity-70">C.I. {{ $enrollment->student->cedula ?? 'S/C' }}</div>
@@ -107,23 +108,23 @@
 </div>
 
 <!-- Configuration Modal -->
-<div id="configOverlay" class="fixed inset-0 bg-[#1A237E]/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
-    <div id="configModal" class="bg-white w-[500px] rounded-[3rem] shadow-2xl overflow-hidden transform scale-90 transition-all duration-300">
-        <div class="bg-[#1A237E] p-8 text-white relative">
-            <h4 class="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Configurar Promoción</h4>
-            <h3 id="modalStudentName" class="text-2xl font-black tracking-tight">Nombre del Estudiante</h3>
-            <div class="absolute top-8 right-8 cursor-pointer text-white/50 hover:text-white" onclick="closeConfig()">
+<div id="configOverlay" class="fixed inset-0 bg-[#1A237E]/40 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 p-4">
+    <div id="configModal" class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform scale-90 transition-all duration-300 max-h-[92vh] flex flex-col">
+        <div class="bg-[#1A237E] px-8 py-6 text-white relative flex-shrink-0">
+            <h4 class="text-xs font-bold uppercase tracking-widest opacity-60 mb-1">Configurar Promoción y Cierre</h4>
+            <h3 id="modalStudentName" class="text-xl font-black tracking-tight">Nombre del Estudiante</h3>
+            <div class="absolute top-6 right-6 cursor-pointer text-white/50 hover:text-white" onclick="closeConfig()">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </div>
         </div>
         
-        <div class="p-10 space-y-8">
+        <div class="p-8 space-y-6 overflow-y-auto custom-scrollbar">
             <!-- Hidden context -->
             <input type="hidden" id="currentEnrollmentId">
             <input type="hidden" id="currentStudentCedula">
 
             <!-- Status Choice -->
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Estatus del Año</label>
                 <div class="grid grid-cols-2 gap-4">
                     <div id="statusPass" onclick="toggleStatus('Aprobado')" class="p-4 rounded-2xl border-2 border-[#1A237E] bg-blue-50/50 cursor-pointer transition-all flex flex-col items-center text-center">
@@ -142,10 +143,10 @@
             </div>
 
             <!-- Target Section -->
-            <div class="space-y-4">
+            <div class="space-y-2">
                 <label class="text-xs font-bold text-gray-400 uppercase tracking-widest ml-1">Sección Destino ({{ $nextYear }})</label>
-                <select id="modalTargetSection" class="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] appearance-none">
-                    <option value="" data-rank="0">No asignar (Egresado/Retirado)</option>
+                <select id="modalTargetSection" class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] appearance-none">
+                    <option value="" data-rank="0">No asignar (Egresado / Retirado)</option>
                     @foreach($allGrades as $g)
                         @foreach($g->sections as $s)
                             <option value="{{ $s->id }}" data-rank="{{ $g->rank }}">
@@ -156,7 +157,18 @@
                 </select>
             </div>
 
-            <button type="button" onclick="confirmStudentConfig()" class="w-full py-5 rounded-2xl font-bold bg-[#FBC02D] text-[#1A237E] hover:bg-[#FBC02D]/90 transition-all shadow-xl shadow-sm text-lg">
+            <!-- Resumen Pedagógico Final del Docente -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-[#1A237E] uppercase tracking-widest ml-1 flex items-center justify-between">
+                    <span>Resumen Final del Docente (Estado del Alumno)</span>
+                    <span class="text-[10px] font-bold text-amber-600">Se refleja en Boletín</span>
+                </label>
+                <textarea id="modalPedagogicalSummary" rows="3" maxlength="2000"
+                    placeholder="Redacte el resumen descriptivo final del desempeño, competencias alcanzadas y recomendaciones para el próximo grado..."
+                    class="w-full px-4 py-3 rounded-2xl bg-gray-50 border-2 border-gray-200 focus:border-[#1A237E] focus:bg-white outline-none transition-all font-medium text-xs text-gray-700 leading-relaxed resize-none"></textarea>
+            </div>
+
+            <button type="button" onclick="confirmStudentConfig()" class="w-full py-4 rounded-2xl font-bold bg-[#FBC02D] text-[#1A237E] hover:bg-[#FBC02D]/90 transition-all shadow-lg text-base">
                 Procesar Estudiante
             </button>
         </div>
@@ -165,14 +177,23 @@
 
 <script>
     const currentRank = {{ $currentRank }};
+    const isTerminalSixth = {{ !empty($isTerminalSixth) ? 'true' : 'false' }};
     const configOverlay = document.getElementById('configOverlay');
     const configModal = document.getElementById('configModal');
     let currentStatus = 'Aprobado';
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str || '';
+        return div.innerHTML;
+    }
 
     function openConfig(id, name, cedula) {
         document.getElementById('modalStudentName').innerText = name;
         document.getElementById('currentEnrollmentId').value = id;
         document.getElementById('currentStudentCedula').value = cedula;
+        const rowEl = document.getElementById('enrollment_' + id);
+        document.getElementById('modalPedagogicalSummary').value = rowEl?.dataset?.summary || '';
         
         // Reset defaults
         toggleStatus('Aprobado');
@@ -201,12 +222,20 @@
         }
 
         // Filter valid target sections in modal select
+        const emptyOpt = targetSelect.querySelector('option[value=""]');
+        if (emptyOpt) {
+            emptyOpt.text = (status === 'Aprobado' && isTerminalSixth)
+                ? 'Egreso Institucional (Promoción de 6to Grado)'
+                : 'Sin asignación (Retirar estudiante del plantel)';
+        }
+
         Array.from(targetSelect.options).forEach(opt => {
             if (opt.value === "") return;
             const rank = parseInt(opt.getAttribute('data-rank'));
             if (status === 'Aprobado') {
-                opt.disabled = rank <= currentRank;
-                opt.style.display = rank <= currentRank ? 'none' : 'block';
+                const hide = isTerminalSixth || rank <= currentRank;
+                opt.disabled = hide;
+                opt.style.display = hide ? 'none' : 'block';
             } else {
                 opt.disabled = rank !== currentRank;
                 opt.style.display = rank !== currentRank ? 'none' : 'block';
@@ -222,34 +251,44 @@
         const cedula = document.getElementById('currentStudentCedula').value;
         const targetId = document.getElementById('modalTargetSection').value;
         const targetName = document.getElementById('modalTargetSection').selectedOptions[0].text;
+        const pedagogicalSummary = document.getElementById('modalPedagogicalSummary').value.trim();
         
-        // Remove from pending
-        document.getElementById('enrollment_' + id).style.display = 'none';
-        document.getElementById('enrollment_' + id).classList.add('processed-hidden');
+        // Persist edited summary on source element in case teacher reverts and re-opens
+        const sourceRow = document.getElementById('enrollment_' + id);
+        if (sourceRow) {
+            sourceRow.dataset.summary = pedagogicalSummary;
+            sourceRow.style.display = 'none';
+            sourceRow.classList.add('processed-hidden');
+        }
 
         // Add to ready
         const readyHtml = `
             <div class="p-4 bg-white rounded-2xl border border-orange-100 shadow-sm animate-fadeIn flex flex-col space-y-2" id="ready_${id}">
-                <input type="hidden" name="students[${id}][status]" value="${currentStatus}">
-                <input type="hidden" name="students[${id}][target_section_id]" value="${targetId}">
+                <input type="hidden" name="students[${id}][status]" value="${escapeHtml(currentStatus)}">
+                <input type="hidden" name="students[${id}][target_section_id]" value="${escapeHtml(targetId)}">
+                <input type="hidden" name="students[${id}][pedagogical_summary]" id="summary_input_${id}" value="">
                 
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="text-[10px] font-black tracking-widest ${currentStatus === 'Aprobado' ? 'text-green-500' : 'text-red-500'} uppercase mb-1">${currentStatus}</div>
-                        <div class="font-bold text-gray-800 text-sm tracking-tight">${name}</div>
+                        <div class="text-[10px] font-black tracking-widest ${currentStatus === 'Aprobado' ? 'text-green-500' : 'text-red-500'} uppercase mb-1">${escapeHtml(currentStatus)}</div>
+                        <div class="font-bold text-gray-800 text-sm tracking-tight">${escapeHtml(name)}</div>
                     </div>
-                    <button type="button" onclick="revertStudent(${id})" class="text-gray-300 hover:text-orange-500 transition-colors">
+                    <button type="button" onclick="revertStudent(${id})" class="text-gray-300 hover:text-orange-500 transition-colors" title="Editar o revertir">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                 </div>
+
+                ${pedagogicalSummary ? `<div class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100 text-[11px] text-gray-600 font-medium italic line-clamp-2">"${escapeHtml(pedagogicalSummary)}"</div>` : ''}
                 
                 <div class="pt-2 border-t border-gray-50 flex items-center text-[10px] font-bold text-gray-400">
                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    ${targetId ? targetName : 'Sin asignación (Egreso)'}
+                    ${targetId ? escapeHtml(targetName) : 'Sin asignación (Egreso / Retiro)'}
                 </div>
             </div>
         `;
         document.getElementById('readyList').insertAdjacentHTML('beforeend', readyHtml);
+        const hiddenSummary = document.getElementById(`summary_input_${id}`);
+        if (hiddenSummary) hiddenSummary.value = pedagogicalSummary;
         
         updateUI();
         closeConfig();

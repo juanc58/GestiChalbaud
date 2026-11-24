@@ -47,14 +47,28 @@
         <input type="hidden" name="subject_id" value="{{ $subjectId }}">
         <input type="hidden" name="term" value="{{ $term }}">
 
+        @php
+            $currentProject = $enrollments->first()?->learning_projects ?? '';
+            $diagField = 'diagnostic_' . (int) $term;
+        @endphp
+        <div class="px-6 pt-5">
+            <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-100 flex flex-col md:flex-row md:items-center gap-4">
+                <label class="text-[10px] font-black text-amber-800 uppercase tracking-widest whitespace-nowrap">Proyecto de Aprendizaje del Aula:</label>
+                <input type="text" name="learning_projects" value="{{ old('learning_projects', $currentProject) }}"
+                       placeholder="Ej: Conociendo nuestra historia y valores ciudadanos (Se imprime en los boletines del aula)"
+                       class="flex-1 px-4 py-2.5 rounded-xl bg-white border border-amber-200 text-xs font-bold text-[#1A237E] outline-none focus:border-[#1A237E]">
+            </div>
+        </div>
+
         <div class="overflow-x-auto p-6">
             <table class="w-full text-left">
                 <thead>
                     <tr class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">
                         <th class="px-6 py-4">Estudiante</th>
-                        <th class="px-6 py-4 w-32 text-center">Calificación (A-E)</th>
-                        <th class="px-6 py-4">Observaciones del Logro</th>
-                        <th class="px-6 py-4 text-center">Estatus</th>
+                        <th class="px-4 py-4 w-28 text-center">Literal (A-E)</th>
+                        <th class="px-4 py-4">Logro en la Materia</th>
+                        <th class="px-4 py-4">Diagnóstico Momento {{ $term }} (Boletín)</th>
+                        <th class="px-4 py-4 text-center">Estatus</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -63,6 +77,7 @@
                         $assessment = $enrollment->assessments->first(); 
                         $score = $assessment ? $assessment->score : '';
                         $obs = $assessment ? $assessment->observations : '';
+                        $diagVal = $enrollment->$diagField ?? '';
                     @endphp
                     <tr class="hover:bg-gray-50/50 transition-colors group">
                         <td class="px-6 py-5">
@@ -72,11 +87,11 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <span class="text-sm font-bold text-gray-800">{{ $enrollment->student->first_name }} {{ $enrollment->student->last_name }}</span>
-                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">C.I: {{ $enrollment->student->cedula }}</span>
+                                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">C.I: {{ $enrollment->student->cedula ?? 'S/C' }}</span>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5 text-center">
+                        <td class="px-4 py-5 text-center">
                             <select name="grades[{{ $enrollment->id }}][score]" 
                                 class="w-20 px-3 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 focus:bg-white text-center font-bold text-gray-800 outline-none transition-all appearance-none cursor-pointer">
                                 <option value="">--</option>
@@ -87,11 +102,15 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td class="px-6 py-5">
-                            <input type="text" name="grades[{{ $enrollment->id }}][observations]" value="{{ old('grades.'.$enrollment->id.'.observations', $obs) }}" placeholder="Describe el desempeño..." 
-                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white text-sm font-semibold text-gray-600 outline-none transition-all">
+                        <td class="px-4 py-5">
+                            <input type="text" name="grades[{{ $enrollment->id }}][observations]" value="{{ old('grades.'.$enrollment->id.'.observations', $obs) }}" placeholder="Desempeño en la materia..." 
+                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white text-xs font-semibold text-gray-600 outline-none transition-all">
                         </td>
-                        <td class="px-6 py-5 text-center">
+                        <td class="px-4 py-5">
+                            <input type="text" name="grades[{{ $enrollment->id }}][diagnostic]" value="{{ old('grades.'.$enrollment->id.'.diagnostic', $diagVal) }}" placeholder="Diagnóstico general del momento {{ $term }}..." 
+                                class="w-full px-4 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white text-xs font-semibold text-gray-600 outline-none transition-all">
+                        </td>
+                        <td class="px-4 py-5 text-center">
                             @if($assessment)
                                 <span class="text-[10px] font-bold text-green-500 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">Cargado</span>
                             @else

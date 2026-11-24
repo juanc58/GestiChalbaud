@@ -22,7 +22,7 @@
                     @csrf
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Año Escolar (ej: 2026-2027)</label>
-                        <input type="text" name="year" required placeholder="YYYY-YYYY" value="{{ old('year') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1A237E]/20 focus:border-[#1A237E] outline-none transition-all {{ $errors->has('year') ? 'border-[#D32F2F]' : '' }}">
+                        <input type="text" name="year" required placeholder="AAAA-AAAA" value="{{ old('year') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-[#1A237E]/20 focus:border-[#1A237E] outline-none transition-all {{ $errors->has('year') ? 'border-[#D32F2F]' : '' }}">
                         @error('year')
                             <p class="text-[10px] text-[#D32F2F] mt-1">{{ $message }}</p>
                         @enderror

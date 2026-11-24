@@ -10,7 +10,12 @@ class Representative extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'cedula',
+        'first_name',
+        'second_name',
+        'last_name',
+        'second_last_name',
+        'email',
         'photo_path',
         'phone_whatsapp',
         'phone_local',
@@ -20,18 +25,42 @@ class Representative extends Model
         'relationship',
     ];
 
-    // --- Accessors that delegate to the linked user ---
-    public function getFirstNameAttribute(): ?string      { return $this->user?->first_name;       }
-    public function getSecondNameAttribute(): ?string     { return $this->user?->second_name;      }
-    public function getLastNameAttribute(): ?string       { return $this->user?->last_name;        }
-    public function getSecondLastNameAttribute(): ?string { return $this->user?->second_last_name; }
-    public function getEmailAttribute(): ?string          { return $this->user?->email;            }
-    public function getCedulaAttribute(): ?int            { return $this->user?->cedula;           }
-    public function getFullNameAttribute(): string        { return $this->user?->full_name ?? '';  }
-
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function setFirstNameAttribute($value): void
     {
-        return $this->belongsTo(User::class);
+        $this->attributes['first_name'] = $value !== null ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setSecondNameAttribute($value): void
+    {
+        $this->attributes['second_name'] = ($value !== null && trim((string) $value) !== '') ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setLastNameAttribute($value): void
+    {
+        $this->attributes['last_name'] = $value !== null ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setSecondLastNameAttribute($value): void
+    {
+        $this->attributes['second_last_name'] = ($value !== null && trim((string) $value) !== '') ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    /**
+     * Full name accessor — concatenates all name parts, skipping empty ones.
+     */
+    public function getFullNameAttribute(): string
+    {
+        return collect([
+            $this->first_name,
+            $this->second_name,
+            $this->last_name,
+            $this->second_last_name,
+        ])->filter()->implode(' ');
+    }
+
+    public function students(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Student::class);
     }
 
     public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -39,4 +68,3 @@ class Representative extends Model
         return $this->hasMany(Enrollment::class);
     }
 }
-

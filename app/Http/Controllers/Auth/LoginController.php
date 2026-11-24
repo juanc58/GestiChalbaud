@@ -29,10 +29,16 @@ class LoginController extends Controller
         $remember = $request->has('remember');
 
         if (Auth::attempt($credentials, $remember)) {
-            if (!Auth::user()->is_active) {
+            $user = Auth::user();
+            if (!$user->is_active || is_null($user->role_id)) {
+                $isPending = $user->isPending();
                 Auth::logout();
                 throw ValidationException::withMessages([
-                    'cedula' => ['Tu cuenta ha sido suspendida. Por favor contacta la administración.'],
+                    'cedula' => [
+                        $isPending
+                            ? 'Tu solicitud de registro está pendiente de aprobación y asignación de rol por un administrador.'
+                            : 'Tu cuenta ha sido suspendida. Por favor contacta a la administración.',
+                    ],
                 ]);
             }
 

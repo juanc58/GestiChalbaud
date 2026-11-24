@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+        <div class="p-8 border-b border-gray-50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gray-50/50">
             <div>
                 <h3 class="text-2xl font-extrabold text-[#1A237E]">Materias</h3>
                 <p class="text-gray-500 font-semibold mt-1">Gestión global de materias impartidas en la institución.</p>
@@ -20,7 +20,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($subjects as $subject)
                     <div
-                        class="group bg-white p-6 rounded-xl border-2 {{ $subject->is_active ? 'border-gray-50 hover:border-[#1A237E]/10' : 'border-red-50 opacity-75' }} transition-all relative overflow-hidden shadow-sm hover:shadow-md">
+                        class="group bg-white p-6 rounded-xl border-2 {{ $subject->is_active ? 'border-gray-100 hover:border-[#1A237E]/20' : 'border-red-100 opacity-75' }} transition-all relative overflow-hidden shadow-sm hover:shadow-md flex flex-col justify-between h-full">
+                        <div>
                         <div class="flex justify-between items-start mb-4">
                             <div
                                 class="p-3 rounded-2xl {{ $subject->is_active ? 'bg-blue-50 text-[#1A237E]' : 'bg-red-50 text-red-400' }}">
@@ -79,8 +80,9 @@
                                     class="text-[9px] font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md uppercase tracking-tighter">{{ $grade->name }}</span>
                             @endforeach
                         </div>
+                        </div>
 
-                        <div class="flex items-center">
+                        <div class="flex items-center pt-3 border-t border-gray-100 mt-auto">
                             @if($subject->is_active)
                                 <span
                                     class="flex items-center text-[10px] font-bold uppercase tracking-widest text-green-500 bg-green-50 px-3 py-1 rounded-full">

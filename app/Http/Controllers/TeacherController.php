@@ -19,15 +19,17 @@ class TeacherController extends Controller
 
     public function index()
     {
-        $teachers = Teacher::with('assignments.section')->get();
+        $teachers = Teacher::with(['user', 'assignments.section.grade'])->get()
+            ->sortBy('first_name')
+            ->values();
+
         return view('teachers.index', compact('teachers'));
     }
 
     public function create()
     {
         $currentYear = $this->getCurrentSchoolYear();
-        // Available sections (those without an assigned teacher for $currentYear)
-        $sections = Section::whereDoesntHave('teacherAssignments', function($q) use ($currentYear) {
+        $sections = Section::whereDoesntHave('teacherAssignments', function ($q) use ($currentYear) {
             $q->where('school_year', $currentYear);
         })->with('grade')->get();
 
@@ -36,24 +38,29 @@ class TeacherController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->filled('cedula')) {
+            $request->merge(['cedula' => preg_replace('/\D/', '', (string) $request->cedula)]);
+        }
+
         $request->validate([
-            'cedula'          => 'required|integer|unique:users,cedula',
-            'first_name'      => 'required|string|max:255',
-            'second_name'     => 'nullable|string|max:255',
-            'last_name'       => 'required|string|max:255',
-            'second_last_name'=> 'nullable|string|max:255',
-            'gender'          => 'required|in:M,F',
-            'birth_date'      => 'required|date',
-            'phone'           => 'nullable|string|max:50',
-            'email'           => 'nullable|email|unique:users,email',
-            'entry_date'      => 'required|date',
-            'academic_degree' => 'required|string',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'cedula'          => 'required|digits_between:6,10|unique:users,cedula',
+            'first_name'      => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_name'     => ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'last_name'       => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_last_name'=> ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'gender'          => 'nullable|in:M,F',
+            'birth_date'      => ['required', new \App\Rules\SpanishDate(minAge: 18, mustBeBeforeToday: true)],
+            'phone'           => ['required', 'string', 'max:50', new \App\Rules\VenezuelanPhone()],
+            'email'           => ['required', 'string', 'max:255', new \App\Rules\StrictEmail(), 'unique:users,email'],
+            'entry_date'      => ['required', new \App\Rules\SpanishDate()],
+            'academic_degree' => 'required|string|max:255',
             'section_id'      => 'nullable|exists:sections,id',
         ]);
 
-        $docenteRole = Role::where('name', 'docente')->first();
+        $docenteRole = Role::firstOrCreate(['name' => 'docente']);
 
-        // 1. Create/Update User with all shared identity fields
+        // 1. Create User (User::saved ensures Teacher profile exists; updateOrCreate below populates extended fields without duplicating)
         $user = User::updateOrCreate(
             ['cedula' => $request->cedula],
             [
@@ -61,38 +68,51 @@ class TeacherController extends Controller
                 'second_name'      => $request->second_name,
                 'last_name'        => $request->last_name,
                 'second_last_name' => $request->second_last_name,
-                'phone'            => $request->phone,
-                'email'            => $request->email ?? $request->cedula . '@sepaez.edu.ve',
+                'phone'            => \App\Rules\VenezuelanPhone::normalize($request->phone),
+                'email'            => mb_strtolower(trim($request->email), 'UTF-8'),
                 'password'         => Hash::make($request->cedula),
                 'role_id'          => $docenteRole->id,
+                'is_active'        => true,
             ]
         );
 
-        // 2. Create Teacher profile (specific data only)
-        $teacher = Teacher::create([
-            'user_id'         => $user->id,
-            'gender'          => $request->gender,
-            'birth_date'      => $request->birth_date,
-            'entry_date'      => $request->entry_date,
-            'academic_degree' => $request->academic_degree,
-            'status'          => 'Activo',
-        ]);
+        $photoPath = $request->hasFile('photo')
+            ? $request->file('photo')->store('teachers', 'public')
+            : null;
 
-        // 3. Optional Initial Assignment
+        // 2. Sync Teacher profile with full labor details
+        $teacher = Teacher::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'photo_path'      => $photoPath,
+                'gender'          => $request->gender,
+                'birth_date'      => \App\Rules\SpanishDate::toDatabase($request->birth_date),
+                'entry_date'      => \App\Rules\SpanishDate::toDatabase($request->entry_date),
+                'academic_degree' => $request->academic_degree,
+                'status'          => 'Activo',
+            ]
+        );
+
+        // 3. Optional Initial Classroom Assignment
         if ($request->section_id) {
             $currentYear = $this->getCurrentSchoolYear();
-            TeacherAssignment::create([
-                'teacher_id'  => $teacher->id,
-                'section_id'  => $request->section_id,
-                'school_year' => $currentYear,
-            ]);
+            TeacherAssignment::updateOrCreate(
+                [
+                    'section_id'  => $request->section_id,
+                    'school_year' => $currentYear,
+                ],
+                [
+                    'teacher_id' => $teacher->id,
+                ]
+            );
         }
 
-        return redirect()->route('teachers.index')->with('success', 'Docente registrado. Clave inicial: ' . $request->cedula);
+        return redirect()->route('teachers.index')->with('success', 'Docente y usuario activos registrados. Clave inicial: ' . $request->cedula);
     }
 
     public function show(Teacher $teacher)
     {
+        $teacher->load(['user', 'assignments.section.grade']);
         $currentYear = $this->getCurrentSchoolYear();
         $sections = Section::with('grade')->get();
         return view('teachers.show', compact('teacher', 'currentYear', 'sections'));
@@ -101,14 +121,13 @@ class TeacherController extends Controller
     public function assignSection(Request $request, Teacher $teacher)
     {
         $validated = $request->validate([
-            'section_id' => 'required|exists:sections,id',
+            'section_id'  => 'required|exists:sections,id',
             'school_year' => 'required|string',
         ]);
 
-        // Enforce uniqueness constraints (handled by unique index but good to check)
         TeacherAssignment::updateOrCreate(
             [
-                'section_id' => $validated['section_id'],
+                'section_id'  => $validated['section_id'],
                 'school_year' => $validated['school_year'],
             ],
             [
@@ -116,7 +135,6 @@ class TeacherController extends Controller
             ]
         );
 
-        // Ensure teacher doesn't have multiple sections the same year
         TeacherAssignment::where('teacher_id', $teacher->id)
             ->where('school_year', $validated['school_year'])
             ->where('section_id', '!=', $validated['section_id'])
@@ -127,15 +145,14 @@ class TeacherController extends Controller
 
     public function unassignSection(Teacher $teacher, $assignmentId)
     {
-        // Admin only check
-        if (auth()->user()->role->name !== 'admin') {
+        if (!auth()->user()->isAdmin()) {
             return back()->with('error', 'No tienes permisos para esta acción.');
         }
 
         $assignment = TeacherAssignment::where('teacher_id', $teacher->id)
             ->where('id', $assignmentId)
             ->firstOrFail();
-            
+
         $assignment->delete();
 
         return back()->with('success', 'Asignación de aula removida.');
@@ -143,27 +160,35 @@ class TeacherController extends Controller
 
     public function edit(Teacher $teacher)
     {
+        $teacher->load('user');
         return view('teachers.edit', compact('teacher'));
     }
 
     public function update(Request $request, Teacher $teacher)
     {
+        if ($request->filled('cedula')) {
+            $request->merge(['cedula' => preg_replace('/\D/', '', (string) $request->cedula)]);
+        }
+
+        $userId = $teacher->user?->id ?? 0;
+
         $request->validate([
-            'cedula'          => 'required|integer|unique:users,cedula,' . ($teacher->user?->id ?? 0),
-            'first_name'      => 'required|string|max:255',
-            'second_name'     => 'nullable|string|max:255',
-            'last_name'       => 'required|string|max:255',
-            'second_last_name'=> 'nullable|string|max:255',
-            'gender'          => 'required|in:M,F',
-            'birth_date'      => 'required|date',
-            'phone'           => 'nullable|string|max:50',
-            'email'           => 'nullable|email',
-            'entry_date'      => 'required|date',
-            'academic_degree' => 'required|string',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_photo'    => 'nullable|boolean',
+            'cedula'          => 'required|digits_between:6,10|unique:users,cedula,' . $userId,
+            'first_name'      => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_name'     => ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'last_name'       => ['required', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'second_last_name'=> ['nullable', 'string', 'max:255', new \App\Rules\LettersOnlyName()],
+            'gender'          => 'nullable|in:M,F',
+            'birth_date'      => ['required', new \App\Rules\SpanishDate(minAge: 18, mustBeBeforeToday: true)],
+            'phone'           => ['required', 'string', 'max:50', new \App\Rules\VenezuelanPhone()],
+            'email'           => ['required', 'string', 'max:255', new \App\Rules\StrictEmail(), 'unique:users,email,' . $userId],
+            'entry_date'      => ['required', new \App\Rules\SpanishDate()],
+            'academic_degree' => 'nullable|string|max:255',
             'status'          => 'required|in:Activo,Inactivo',
         ]);
 
-        // Update user shared fields
         if ($teacher->user) {
             $teacher->user->update([
                 'cedula'           => $request->cedula,
@@ -171,17 +196,29 @@ class TeacherController extends Controller
                 'second_name'      => $request->second_name,
                 'last_name'        => $request->last_name,
                 'second_last_name' => $request->second_last_name,
-                'phone'            => $request->phone,
-                'email'            => $request->email ?? $teacher->user->email,
+                'phone'            => \App\Rules\VenezuelanPhone::normalize($request->phone),
+                'email'            => mb_strtolower(trim($request->email), 'UTF-8'),
             ]);
         }
 
-        // Update teacher-specific fields
+        $photoPath = $teacher->photo_path;
+        if ($request->boolean('remove_photo') && $photoPath) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($photoPath);
+            $photoPath = null;
+        }
+        if ($request->hasFile('photo')) {
+            if ($photoPath) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($photoPath);
+            }
+            $photoPath = $request->file('photo')->store('teachers', 'public');
+        }
+
         $teacher->update([
-            'gender'          => $request->gender,
-            'birth_date'      => $request->birth_date,
-            'entry_date'      => $request->entry_date,
-            'academic_degree' => $request->academic_degree,
+            'photo_path'      => $photoPath,
+            'gender'          => $request->gender ?: null,
+            'birth_date'      => \App\Rules\SpanishDate::toDatabase($request->birth_date),
+            'entry_date'      => \App\Rules\SpanishDate::toDatabase($request->entry_date) ?: $teacher->entry_date,
+            'academic_degree' => $request->academic_degree ?: 'Docente Institucional',
             'status'          => $request->status,
         ]);
 
@@ -190,7 +227,10 @@ class TeacherController extends Controller
 
     public function destroy(Teacher $teacher)
     {
+        if ($teacher->photo_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($teacher->photo_path);
+        }
         $teacher->delete();
-        return redirect()->route('teachers.index')->with('success', 'Docente eliminado.');
+        return redirect()->route('teachers.index')->with('success', 'Ficha docente eliminada.');
     }
 }

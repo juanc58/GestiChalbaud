@@ -59,6 +59,7 @@ class SystemTestDataSeeder extends Seeder
             
             // Representative
             $representative = Representative::factory()->create();
+            $student->update(['representative_id' => $representative->id]);
             
             // Enrollment
             Enrollment::factory()->create([

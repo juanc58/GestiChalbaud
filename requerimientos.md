@@ -1,7 +1,7 @@
-He actualizado el archivo **.md** para integrar los nuevos requisitos sobre la estructura organizativa de la **Unidad Educativa Distrital "Páez"** y el nuevo módulo de egresados.
+Este documento define los requisitos sobre la estructura organizativa de GestiChalbaud y el módulo de egresados.
 
 ```markdown
-# Requerimientos del Sistema de Gestión Escolar - U.E.D. "Páez"
+# Requerimientos del Sistema GestiChalbaud
 
 Este documento define la estructura, seguridad y módulos funcionales para la digitalización de los procesos administrativos y pedagógicos del plantel.
 

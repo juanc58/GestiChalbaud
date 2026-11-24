@@ -12,14 +12,25 @@
             </a>
             <h3 class="text-2xl font-extrabold text-[#1A237E]">Editar Estudiante</h3>
         </div>
-        <p class="text-gray-500 font-semibold text-sm mt-1">Actualiza los datos de la ficha de inscripción de {{ $student->first_name }}.</p>
+        <p class="text-gray-500 font-semibold text-sm mt-1">Actualiza los datos de la ficha de inscripción y representante de {{ $student->first_name }}.</p>
     </div>
+
+    @if($errors->any())
+    <div class="p-5 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-xs font-bold space-y-1">
+        <p class="uppercase tracking-wider text-red-800 font-extrabold">Por favor corrige los siguientes campos:</p>
+        <ul class="list-disc list-inside">
+            @foreach($errors->all() as $err)
+                <li>{{ $err }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     {{-- Step Progress Bar --}}
     <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-8">
         <div class="flex items-center justify-between gap-2">
             @php 
-                $steps = ['Identidad','Salud','Ubicación','Académico','Entorno'];
+                $steps = ['Identidad','Salud','Ubicación','Académico','Entorno','Representante'];
                 if(auth()->user()->isAdmin()) {
                     $steps[] = 'Asignación';
                 }
@@ -40,41 +51,38 @@
         </div>
     </div>
 
-    <form action="{{ route('students.update', $student->id) }}" method="POST" id="student-form" class="space-y-8" novalidate>
+    <form action="{{ route('students.update', $student->id) }}" method="POST" enctype="multipart/form-data" id="student-form" class="space-y-8" novalidate>
         @csrf
         @method('PUT')
 
         @include('students.partials.form_sections', ['student' => $student])
 
+        {{-- STEP 6: Datos del Representante --}}
+        @include('students.partials.rep_form_fields', ['student' => $student])
+
         @if(auth()->user()->isAdmin())
-        {{-- STEP 6: Asignación --}}
-        <div class="wizard-step hidden bg-white p-8 rounded-xl shadow-sm border border-[#1A237E]/20" data-step="6">
+        {{-- STEP 7: Asignación de Aula --}}
+        <div class="wizard-step hidden bg-white p-8 rounded-xl shadow-sm border border-[#1A237E]/20" data-step="7">
             <h4 class="text-[#1A237E] font-bold text-xs uppercase tracking-[0.2em] mb-6 flex items-center">
-                <span class="w-8 h-8 rounded-full bg-[#1A237E]/10 flex items-center justify-center mr-3">6</span>
-                Asignación de Aula y Representante
+                <span class="w-8 h-8 rounded-full bg-[#1A237E]/10 flex items-center justify-center mr-3">7</span>
+                Asignación de Aula
             </h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-400 uppercase ml-1">Asignar Aula (Opcional)</label>
-                    <select name="section_id" id="section_id" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none font-bold text-[#1A237E] appearance-none">
-                        <option value="">Sin aula asignada (Pendiente)</option>
-                        @foreach($sections->groupBy('grade.name') as $gradeName => $gradeSections)
-                            <optgroup label="{{ $gradeName }}">
-                                @foreach($gradeSections as $s)
-                                    <option value="{{ $s->id }}" {{ $currentSectionId == $s->id ? 'selected' : '' }}>
-                                        {{ $gradeName }} - "{{ $s->name }}" ({{ $s->shift }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        @endforeach
-                    </select>
-                    @error('section_id')<p class="text-[10px] font-bold text-red-500 mt-2 ml-1">{{ $message }}</p>@enderror
-                </div>
-                @include('students.partials.rep_selector', ['student' => $student])
+            <div class="max-w-xl space-y-2">
+                <label class="text-xs font-bold text-gray-400 uppercase ml-1">Aula Asignada (Año Escolar Vigente)</label>
+                <select name="section_id" id="section_id" class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none font-bold text-[#1A237E] appearance-none">
+                    <option value="">Sin aula asignada (Pendiente)</option>
+                    @foreach($sections->groupBy('grade.name') as $gradeName => $gradeSections)
+                        <optgroup label="{{ $gradeName }}">
+                            @foreach($gradeSections as $s)
+                                <option value="{{ $s->id }}" {{ $currentSectionId == $s->id ? 'selected' : '' }}>
+                                    {{ $gradeName }} - "{{ $s->name }}" ({{ $s->shift }})
+                                </option>
+                            @endforeach
+                        </optgroup>
+                    @endforeach
+                </select>
+                @error('section_id')<p class="text-[10px] font-bold text-red-500 mt-2 ml-1">{{ $message }}</p>@enderror
             </div>
-            <p class="text-[10px] text-gray-400 font-bold mt-4 ml-1 italic">
-                * Para que el representante pueda ver las notas, el alumno debe estar inscrito en un aula.
-            </p>
         </div>
         @endif
 
@@ -105,31 +113,16 @@
 </div>
 
 <script>
-const TOTAL_STEPS = {{ auth()->user()->isAdmin() ? 6 : 5 }};
+const TOTAL_STEPS = {{ auth()->user()->isAdmin() ? 7 : 6 }};
 let currentStep = 1;
-let maxReachedStep = 1;
+let maxReachedStep = TOTAL_STEPS;
 const isEditMode = true;
 
 function getSteps() { return document.querySelectorAll('.wizard-step'); }
 
 function handleStepClick(targetStep) {
     if(targetStep === currentStep) return;
-    
-    if(isEditMode) {
-        // Free navigation in edit mode
-        wizardGo(targetStep);
-    } else {
-        // In creation mode, can only jump to steps already verified/reached
-        if(targetStep <= maxReachedStep) {
-            wizardGo(targetStep);
-        } else {
-            if (typeof showToast === 'function') {
-                showToast('Debes completar y validar el paso actual usando el botón "Siguiente" antes de avanzar libremente.', 'warning');
-            } else {
-                alert('Debes completar y validar el paso actual usando el botón "Siguiente" antes de avanzar libremente.');
-            }
-        }
-    }
+    wizardGo(targetStep);
 }
 
 function wizardGo(n) {
@@ -138,13 +131,12 @@ function wizardGo(n) {
         const sn = parseInt(s.dataset.step);
         s.classList.toggle('hidden', sn !== n);
     });
-    // Update dots
     for(let i=1; i<=TOTAL_STEPS; i++){
         const dot   = document.getElementById(`step-dot-${i}`);
         const label = document.getElementById(`step-label-${i}`);
         if(!dot) continue;
-        const done    = isEditMode ? (i < n) : (i < maxReachedStep);
-        const active  = i === n;
+        const done   = i < n;
+        const active = i === n;
         dot.className = `w-8 h-8 rounded-full flex items-center justify-center text-xs font-black transition-all group-hover:scale-110 ${active ? 'bg-[#1A237E] text-white shadow-sm' : done ? 'bg-[#FBC02D] text-[#1A237E]' : 'bg-gray-100 text-gray-400'}`;
         dot.textContent = done && !active ? '✓' : i;
         if(label) label.className = `text-[10px] font-bold mt-1 transition-all group-hover:text-[#1A237E] ${active ? 'text-[#1A237E]' : done ? 'text-[#FBC02D]' : 'text-gray-400'}`;
@@ -160,21 +152,18 @@ function validateCurrentStep() {
     const currentPanel = document.querySelector(`.wizard-step[data-step="${currentStep}"]`);
     if (!currentPanel) return true;
 
-    // Find all required fields in the current step
     const requiredFields = currentPanel.querySelectorAll('input[required], select[required]');
     let isValid = true;
     let firstInvalidField = null;
 
-    // Clear previous custom error styles
     currentPanel.querySelectorAll('.border-red-500').forEach(el => {
-        if (!el.classList.contains('section-req')) {
+        if (!el.classList.contains('section-req') && !el.classList.contains('rep-req')) {
              el.classList.remove('border-red-500');
              el.classList.add('border-transparent');
         }
     });
 
     requiredFields.forEach(field => {
-        // For select elements, empty string is invalid
         if (!field.value.trim()) {
             isValid = false;
             field.classList.remove('border-transparent');
@@ -199,14 +188,15 @@ function validateCurrentStep() {
 
 function wizardNext() { 
     if (validateCurrentStep()) {
-        const nextStep = currentStep + 1;
-        if (!isEditMode && nextStep > maxReachedStep) {
-            maxReachedStep = nextStep;
-        }
-        wizardGo(nextStep); 
+        wizardGo(currentStep + 1); 
     }
 }
 function wizardPrev() { wizardGo(currentStep - 1); }
+
+@if($student->status === 'Egresado')
+document.querySelectorAll('.rep-req').forEach(e => e.classList.add('hidden'));
+document.querySelectorAll('.rep-req-input').forEach(e => e.removeAttribute('required'));
+@endif
 
 wizardGo(1);
 </script>

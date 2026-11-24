@@ -21,6 +21,31 @@ class Student extends Model
         'is_active', 'status'
     ];
 
+    public function setFirstNameAttribute($value): void
+    {
+        $this->attributes['first_name'] = $value !== null ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setSecondNameAttribute($value): void
+    {
+        $this->attributes['second_name'] = ($value !== null && trim((string) $value) !== '') ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setLastNameAttribute($value): void
+    {
+        $this->attributes['last_name'] = $value !== null ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function setSecondLastNameAttribute($value): void
+    {
+        $this->attributes['second_last_name'] = ($value !== null && trim((string) $value) !== '') ? mb_strtoupper(trim((string) $value), 'UTF-8') : null;
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo_path ? asset('storage/' . $this->photo_path) : null;
+    }
+
     public function getFullNameAttribute(): string
     {
         return collect([
@@ -47,6 +72,16 @@ class Student extends Model
     public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function graduate(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Graduate::class);
+    }
+
+    public function attendances(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StudentAttendance::class);
     }
 
     public function allergies(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

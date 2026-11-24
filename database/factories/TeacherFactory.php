@@ -14,14 +14,15 @@ class TeacherFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create([
-                'role_id' => Role::where('name', 'worker')->first()?->id ?? 2
+            'user_id' => fn () => User::factory()->createQuietly([
+                'role_id'   => Role::firstOrCreate(['name' => 'docente'])->id,
+                'is_active' => true,
             ])->id,
-            'gender' => fake()->randomElement(['M', 'F']),
-            'birth_date' => fake()->date('Y-m-d', '-25 years'),
-            'entry_date' => fake()->date('Y-m-d', '-5 years'),
-            'academic_degree' => fake()->randomElement(['Licenciado', 'Magister', 'Doctor']),
-            'status' => 'Activo',
+            'gender'          => fake()->randomElement(['M', 'F']),
+            'birth_date'      => fake()->date('Y-m-d', '-25 years'),
+            'entry_date'      => fake()->date('Y-m-d', '-5 years'),
+            'academic_degree' => fake()->randomElement(['Licenciado en Educación', 'Magister', 'Profesor Integral']),
+            'status'          => 'Activo',
         ];
     }
 }

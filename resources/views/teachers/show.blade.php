@@ -1,15 +1,15 @@
 @extends('dashboard')
 
 @section('content')
-<div class="max-w-full space-y-6 space-y-8">
-    <div class="flex justify-between items-end">
+<div class="max-w-full space-y-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
             <h3 class="text-2xl font-extrabold text-[#1A237E]">Perfil del Docente</h3>
             <p class="text-gray-500 font-semibold">Resumen profesional y asignaciones de aula.</p>
         </div>
-        <div class="flex space-x-3">
-            <a href="{{ route('teachers.index') }}" class="px-6 py-2 rounded-xl bg-white text-gray-500 font-bold border border-gray-100 hover:bg-gray-50 transition-all text-sm flex items-center">Volver</a>
-            <a href="{{ route('teachers.edit', $teacher->id) }}" class="px-6 py-2 rounded-xl bg-white text-[#FBC02D] font-bold border border-orange-100 hover:bg-orange-50 transition-all text-sm">Editar Datos</a>
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ route('teachers.index') }}" class="px-6 py-2 rounded-xl bg-white text-gray-500 font-bold border border-gray-200 hover:bg-gray-50 transition-all text-sm flex items-center">Volver</a>
+            <a href="{{ route('teachers.edit', $teacher->id) }}" class="px-6 py-2 rounded-xl bg-white text-[#FBC02D] font-bold border border-orange-200 hover:bg-orange-50 transition-all text-sm flex items-center">Editar Datos</a>
         </div>
     </div>
 
@@ -17,8 +17,12 @@
         <!-- left col: Photo & Quick Info -->
         <div class="space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center">
-                <div class="w-24 h-24 rounded-full bg-[#1A237E]/5 mb-4 flex items-center justify-center border-4 border-[#1A237E]/10">
-                    <span class="text-3xl font-bold text-[#1A237E]">{{ substr($teacher->first_name, 0, 1) }}{{ substr($teacher->last_name, 0, 1) }}</span>
+                <div class="w-24 h-24 rounded-full bg-[#1A237E]/5 mb-4 flex items-center justify-center border-4 border-[#1A237E]/10 overflow-hidden">
+                    @if($teacher->photo_url)
+                        <img src="{{ $teacher->photo_url }}" alt="Foto de {{ $teacher->first_name }}" class="w-full h-full object-cover">
+                    @else
+                        <span class="text-3xl font-bold text-[#1A237E]">{{ substr($teacher->first_name, 0, 1) }}{{ substr($teacher->last_name, 0, 1) }}</span>
+                    @endif
                 </div>
                 <h4 class="font-extrabold text-[#1A237E] text-center">{{ $teacher->first_name }} {{ $teacher->last_name }}</h4>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">C.I. V-{{ $teacher->cedula }}</p>
@@ -55,11 +59,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Título Académico</p>
-                        <p class="font-bold text-gray-700">{{ $teacher->academic_degree }}</p>
+                        <p class="font-bold text-gray-700">{{ $teacher->academic_degree ?? 'Docente Institucional' }}</p>
                     </div>
                     <div>
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Fecha de Ingreso</p>
-                        <p class="font-bold text-gray-700">{{ \Carbon\Carbon::parse($teacher->entry_date)->format('d/m/Y') }}</p>
+                        <p class="font-bold text-gray-700">{{ $teacher->entry_date ? \Carbon\Carbon::parse($teacher->entry_date)->format('d/m/Y') : 'Por registrar' }}</p>
                     </div>
                 </div>
             </div>
@@ -74,27 +78,35 @@
                 @php $assignment = $teacher->assignments->where('school_year', $currentYear)->first(); @endphp
 
                 @if($assignment)
-                    <div class="p-6 rounded-2xl bg-[#FBC02D]/5 border border-[#c56c39]/10 flex justify-between items-center">
+                    <div class="p-6 rounded-2xl bg-[#FBC02D]/5 border border-[#c56c39]/10 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                         <div>
                             <p class="text-[10px] font-black text-[#FBC02D] uppercase tracking-widest mb-1">Aula Asignada</p>
                             <h6 class="text-xl font-black text-[#1A237E]">{{ $assignment->section->grade->name }} "{{ $assignment->section->name }}"</h6>
                             <p class="text-xs font-bold text-gray-400 mt-1">Turno: {{ $assignment->section->shift }}</p>
                         </div>
-                        <div class="flex flex-col items-end">
-                            <span class="text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full mb-3">En Curso</span>
-                            <a href="{{ route('sections.show', $assignment->section_id) }}" class="text-xs font-bold text-[#1A237E] hover:underline">Ver Aula</a>
+                        <div class="flex flex-col sm:items-end gap-2">
+                            <span class="text-[10px] font-black text-green-600 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full self-start sm:self-end">En Curso</span>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('sections.show', $assignment->section_id) }}" class="text-xs font-bold text-[#1A237E] hover:underline">Ver Aula</a>
+                                @if(Auth::user()->isAdmin())
+                                <form action="{{ route('teachers.unassign-section', [$teacher->id, $assignment->id]) }}" method="POST" onsubmit="return confirm('¿Desvincular al docente de esta aula?');">
+                                    @csrf
+                                    <button type="submit" class="text-xs font-bold text-red-500 hover:text-red-700 hover:underline">Desvincular Aula</button>
+                                </form>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @else
                     <div class="p-8 rounded-xl border-2 border-dashed border-gray-100 text-center">
                         <p class="text-gray-400 font-bold text-sm italic mb-6 text-center">No hay asignación activa para este año escolar.</p>
                         
-                        <form action="{{ route('teachers.assign-section', $teacher->id) }}" method="POST" class="flex flex-col md:flex-row gap-4 justify-center items-end">
+                        <form action="{{ route('teachers.assign-section', $teacher->id) }}" method="POST" class="flex flex-col md:flex-row gap-4 justify-center items-stretch md:items-end">
                             @csrf
                             <input type="hidden" name="school_year" value="{{ $currentYear }}">
-                            <div class="text-left">
+                            <div class="text-left w-full md:w-auto">
                                 <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1 ml-1 block">Seleccionar Aula Libre</label>
-                                <select name="section_id" required class="px-5 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 outline-none font-bold text-gray-700 text-sm appearance-none min-w-[200px]">
+                                <select name="section_id" required class="w-full md:min-w-[200px] px-5 py-3 rounded-xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 outline-none font-bold text-gray-700 text-sm appearance-none">
                                     <option value="">Seleccione...</option>
                                     @foreach($sections as $sec)
                                         @php 
@@ -107,7 +119,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <button type="submit" class="bg-[#1A237E] text-white px-8 py-3.5 rounded-xl font-black text-xs hover:bg-[#1A237E]/90 transition-all shadow-lg uppercase tracking-widest">
+                            <button type="submit" class="bg-[#1A237E] text-white px-8 py-3 rounded-xl font-black text-xs hover:bg-[#1A237E]/90 transition-all shadow-lg uppercase tracking-widest whitespace-nowrap">
                                 Asignar Ahora
                             </button>
                         </form>

@@ -11,7 +11,7 @@ class Enrollment extends Model
     protected $fillable = [
         'student_id', 'section_id', 'representative_id', 'school_year',
         'status', 'diagnostic_1', 'diagnostic_2', 'diagnostic_3', 
-        'learning_projects', 'recommendations'
+        'learning_projects', 'recommendations', 'pedagogical_summary'
     ];
 
     public function student(): \Illuminate\Database\Eloquent\Relations\BelongsTo

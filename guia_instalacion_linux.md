@@ -1,15 +1,15 @@
-# Guía de Instalación: SEPAEZ en Linux (XAMPP)
+# Guía de Instalación: GestiChalbaud en Linux (XAMPP)
 
 Esta guía detalla los pasos para instalar y configurar el proyecto en un entorno Linux utilizando XAMPP.
 
 ## 1. Requisitos Previos
 *   Tener instalado **XAMPP for Linux** (LAMPP) en `/opt/lampp`.
 *   Tener instalado **Composer** y **Node.js/NPM** en el sistema Linux.
-*   Archivo de respaldo `backup_sepaez.sql` generado en Windows.
+*   Archivo de respaldo `gestichalbaud_backup.sql` generado en Windows.
 
 ## 2. Transferencia de Archivos
-1.  Copia la carpeta del proyecto `sepaez` a tu directorio de usuario en Linux (por ejemplo: `~/Escritorio/sepaez`).
-2.  Asegúrate de que el archivo `backup_sepaez.sql` esté dentro de esa carpeta o en un lugar accesible.
+1.  Copia la carpeta del proyecto `GestiChalbaud` a tu directorio de usuario en Linux (por ejemplo: `~/Escritorio/GestiChalbaud`).
+2.  Asegúrate de que el archivo `gestichalbaud_backup.sql` esté dentro de esa carpeta o en un lugar accesible.
 
 ## 3. Configuración de la Base de Datos
 1.  **Iniciar XAMPP:**
@@ -19,11 +19,11 @@ Esta guía detalla los pasos para instalar y configurar el proyecto en un entorn
 2.  **Crear la base de datos:**
     Abre la terminal y ejecuta:
     ```bash
-    /opt/lampp/bin/mysql -u root -e "CREATE DATABASE IF NOT EXISTS sepaez;"
+    /opt/lampp/bin/mysql -u root -e "CREATE DATABASE IF NOT EXISTS gestichalbaud;"
     ```
 3.  **Importar el respaldo:**
     ```bash
-    /opt/lampp/bin/mysql -u root sepaez < backup_sepaez.sql
+    /opt/lampp/bin/mysql -u root gestichalbaud < gestichalbaud_backup.sql
     ```
     *Nota: Si te da error de acceso, intenta con `-h 127.0.0.1` o verifica si tienes contraseña establecida.*
 
@@ -33,7 +33,7 @@ Edita el archivo `.env` en la carpeta del proyecto en Linux:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=sepaez
+DB_DATABASE=gestichalbaud
 DB_USERNAME=root
 DB_PASSWORD=
 # Si usas el socket de XAMPP específicamente:
@@ -43,7 +43,7 @@ DB_PASSWORD=
 ## 5. Permisos de Carpetas (CRÍTICO)
 Laravel necesita permisos de escritura en ciertas carpetas para funcionar en Linux:
 ```bash
-cd ~/Escritorio/sepaez
+cd ~/Escritorio/GestiChalbaud
 sudo chown -R $USER:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 ```

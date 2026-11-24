@@ -1,10 +1,9 @@
-# Especificación Técnica y Requerimientos: Proyecto SEPAEZ
-**Unidad Educativa Distrital "Páez"**
+# Especificación Técnica y Requerimientos: GestiChalbaud
 
 ---
 
 ## 1. Visión General del Arquitecto
-Como responsable técnico de este proyecto, el objetivo primordial es la transición de una gestión basada en papel a una arquitectura digital robusta, escalable y segura. El sistema **SEPAEZ** no es solo un CRUD; es un ecosistema institucional que integra la jerarquía académica con la realidad socio-pedagógica del plantel.
+Como responsable técnico de este proyecto, el objetivo primordial es la transición de una gestión basada en papel a una arquitectura digital robusta, escalable y segura. El sistema **GestiChalbaud** no es solo un CRUD; es un ecosistema institucional que integra la jerarquía académica con la realidad socio-pedagógica del plantel.
 
 ### Pilares Fundamentales:
 *   **Integridad de Datos:** Garantizar que la relación Representante-Estudiante sea inquebrantable y auditada.

@@ -45,8 +45,15 @@ class SectionController extends Controller
 
     public function create()
     {
+        $currentYear = $this->getCurrentSchoolYear();
         $grades = Grade::all();
-        return view('sections.create', compact('grades'));
+        $teachers = \App\Models\Teacher::with('user')
+            ->where('status', 'Activo')
+            ->whereDoesntHave('assignments', function ($q) use ($currentYear) {
+                $q->where('school_year', $currentYear);
+            })->get()->sortBy('first_name')->values();
+
+        return view('sections.create', compact('grades', 'teachers', 'currentYear'));
     }
 
     public function store(Request $request)
@@ -62,14 +69,23 @@ class SectionController extends Controller
                 })
             ],
             'shift' => 'required|string|in:Mañana,Tarde,Integral',
+            'teacher_id' => 'nullable|exists:teachers,id',
         ], [
             'name.unique' => 'Ya existe una sección con este nombre ("' . strtoupper($request->name) . '") para el grado seleccionado.',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['grade_id', 'name', 'shift']);
         $data['name'] = strtoupper($data['name']);
 
-        Section::create($data);
+        $section = Section::create($data);
+
+        if (auth()->user()->isSuperAdmin() && $request->filled('teacher_id')) {
+            $currentYear = $this->getCurrentSchoolYear();
+            \App\Models\TeacherAssignment::updateOrCreate(
+                ['section_id' => $section->id, 'school_year' => $currentYear],
+                ['teacher_id' => $request->teacher_id]
+            );
+        }
 
         return redirect()->route('sections.index')->with('success', 'Sección creada exitosamente.');
     }
@@ -98,7 +114,7 @@ class SectionController extends Controller
 
         // Logic for editability: Latest year OR Admin role
         $isLatestYear = ($selectedYear == $currentYear);
-        $isAdmin = auth()->user()->role->name === 'admin';
+        $isAdmin = auth()->user()->isSuperAdmin();
 
         // Load enrollments filtered by selected year and sorted alphabetically by student name
         $enrollments = $section->enrollments()
@@ -122,11 +138,15 @@ class SectionController extends Controller
         $grades = Grade::all();
         
         // Teachers without an assignment this year OR the one already assigned here
-        $teachers = \App\Models\Teacher::whereDoesntHave('assignments', function($q) use ($currentYear) {
-            $q->where('school_year', $currentYear);
-        })->orWhereHas('assignments', function($q) use ($currentYear, $section) {
-            $q->where('school_year', $currentYear)->where('section_id', $section->id);
-        })->get()->sortBy('first_name')->values();
+        $teachers = \App\Models\Teacher::with('user')
+            ->where(function ($outer) use ($currentYear, $section) {
+                $outer->where('status', 'Activo')
+                    ->whereDoesntHave('assignments', function ($q) use ($currentYear) {
+                        $q->where('school_year', $currentYear);
+                    });
+            })->orWhereHas('assignments', function ($q) use ($currentYear, $section) {
+                $q->where('school_year', $currentYear)->where('section_id', $section->id);
+            })->get()->sortBy('first_name')->values();
 
         return view('sections.edit', compact('section', 'grades', 'teachers', 'currentYear'));
     }
@@ -154,7 +174,7 @@ class SectionController extends Controller
         $section->update($data);
 
         // Teacher Assignment logic (Admin only)
-        if (auth()->user()->role->name === 'admin') {
+        if (auth()->user()->isSuperAdmin()) {
             $currentYear = $this->getCurrentSchoolYear();
             if ($request->filled('teacher_id')) {
                 // Assign new teacher (updateOrCreate handles the unique constraint per year)
@@ -183,32 +203,40 @@ class SectionController extends Controller
     public function promotionView(Section $section)
     {
         $currentYear = $this->getCurrentSchoolYear();
-        
+
+        if (auth()->user()->isDocente() && (int) auth()->user()->assignedSectionId($currentYear) !== (int) $section->id) {
+            abort(403, 'Solo puedes procesar el cierre de año de tu aula asignada.');
+        }
+
         $enrollments = $section->enrollments()
             ->where('enrollments.school_year', $currentYear)
             ->whereIn('enrollments.status', ['Inscrito', 'Repitiente'])
             ->join('students', 'enrollments.student_id', '=', 'students.id')
-            ->orderBy('students.first_name')
             ->orderBy('students.last_name')
+            ->orderBy('students.first_name')
             ->select('enrollments.*')
             ->with('student')
             ->get();
         $section->setRelation('enrollments', $enrollments);
         $section->load('grade.level');
-        
+
         // Group sections by grade with rank calculation
-        $allGrades = Grade::with('sections')->get()->map(function($g) {
+        $allGrades = Grade::with('sections')->get()->map(function ($g) {
             $g->rank = ($g->educational_level_id * 10) + $g->number;
             return $g;
         });
 
         $currentRank = ($section->grade->educational_level_id * 10) + $section->grade->number;
-        
+        $isTerminalSixth = ($section->grade->educational_level_id == 2 && (int) $section->grade->number === 6)
+            || str_contains(mb_strtolower($section->grade->name, 'UTF-8'), '6to');
+
         // Calculate next academic year
         $parts = explode('-', $currentYear);
-        $nextYear = ((int)$parts[0] + 1) . '-' . ((int)$parts[1] + 1);
-        
-        return view('sections.promote', compact('section', 'allGrades', 'currentYear', 'nextYear', 'currentRank'));
+        $nextYear = (count($parts) === 2 && is_numeric($parts[0]) && is_numeric($parts[1]))
+            ? (((int) $parts[0] + 1) . '-' . ((int) $parts[1] + 1))
+            : ((now()->year) . '-' . (now()->year + 1));
+
+        return view('sections.promote', compact('section', 'allGrades', 'currentYear', 'nextYear', 'currentRank', 'isTerminalSixth'));
     }
 
     public function assignView(Section $section)
@@ -244,7 +272,7 @@ class SectionController extends Controller
             $student = \App\Models\Student::findOrFail($studentId);
             
             $lastEnrollment = $student->enrollments()->latest()->first();
-            $repId = $lastEnrollment ? $lastEnrollment->representative_id : \App\Models\Representative::first()->id;
+            $repId = $student->representative_id ?? $lastEnrollment?->representative_id;
 
             \App\Models\Enrollment::create([
                 'student_id' => $student->id,
@@ -261,57 +289,116 @@ class SectionController extends Controller
 
     public function promote(Request $request, Section $section)
     {
-        $data = $request->validate([
-            'students' => 'required|array',
-            'students.*.status' => 'required|in:Aprobado,Reprobado',
-            'students.*.target_section_id' => 'nullable|exists:sections,id',
-            'next_school_year' => 'required|string',
-        ]);
+        $currentYear = $this->getCurrentSchoolYear();
 
-        foreach ($data['students'] as $enrollmentId => $studentData) {
-            $enrollment = \App\Models\Enrollment::find($enrollmentId);
-            if (!$enrollment) continue;
-
-            $student = $enrollment->student;
-
-            // Mark current enrollment as completed/promoted
-            $enrollment->update(['status' => $studentData['status'] == 'Aprobado' ? 'Promovido' : 'Repitiente']);
-
-            // Create new enrollment for the next academic year if a target section is provided
-            if (!empty($studentData['target_section_id'])) {
-                \App\Models\Enrollment::create([
-                    'student_id' => $enrollment->student_id,
-                    'representative_id' => $enrollment->representative_id,
-                    'section_id' => $studentData['target_section_id'],
-                    'school_year' => $data['next_school_year'],
-                    'status' => 'Inscrito',
-                ]);
-                // Ensure student remains Active if they have a target section
-                $student->update(['status' => 'Activo', 'is_active' => true]);
-            } else if ($studentData['status'] == 'Aprobado') {
-                // Determine if they are Graduate (from 6th grade) or just Withdrawn
-                // Primaria Level 2, Grade 6 -> Rank 26
-                $currentGradeRank = ($section->grade->educational_level_id * 10) + $section->grade->number;
-                
-                if ($currentGradeRank === 26) {
-                    // Graduate from the institution
-                    $student->update(['status' => 'Egresado', 'is_active' => false]);
-                    \App\Models\Graduate::create([
-                        'student_id' => $enrollment->student_id,
-                        'promotion_year' => $data['next_school_year'],
-                        'notes' => 'Promovido y egresado oficialmente de 6to Grado.'
-                    ]);
-                } else {
-                    // Withdrawn (Retirado) - approved but not continuing here
-                    $student->update(['status' => 'Retirado', 'is_active' => false]);
-                }
-            } else {
-                // If they failed and no target section was provided, they are also Retirados
-                $student->update(['status' => 'Retirado', 'is_active' => false]);
+        if (!auth()->user()->isAdmin()) {
+            if (!auth()->user()->isDocente() || (int) auth()->user()->assignedSectionId($currentYear) !== (int) $section->id) {
+                abort(403, 'No tienes permisos para procesar la prosecución de esta aula.');
             }
         }
 
-        return redirect()->route('sections.show', $section->id)->with('success', 'Cierre de año escolar procesado exitosamente.');
+        $data = $request->validate([
+            'students'                       => 'required|array|min:1',
+            'students.*.status'              => 'required|in:Aprobado,Reprobado',
+            'students.*.target_section_id'   => 'nullable|exists:sections,id',
+            'students.*.pedagogical_summary' => 'nullable|string|max:2000',
+            'next_school_year'               => ['required', 'string', 'regex:/^\d{4}-\d{4}$/', \Illuminate\Validation\Rule::notIn([$currentYear])],
+        ]);
+
+        $section->load('grade.level');
+        $currentRank = ($section->grade->educational_level_id * 10) + $section->grade->number;
+        $isTerminalSixth = ($section->grade->educational_level_id == 2 && (int) $section->grade->number === 6)
+            || str_contains(mb_strtolower($section->grade->name, 'UTF-8'), '6to');
+
+        $targetSections = Section::with('grade')
+            ->whereIn('id', collect($data['students'])->pluck('target_section_id')->filter()->unique())
+            ->get()
+            ->keyBy('id');
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($data, $section, $currentYear, $currentRank, $isTerminalSixth, $targetSections) {
+            \App\Models\SchoolYear::firstOrCreate(
+                ['year' => $data['next_school_year']],
+                ['is_active' => false]
+            );
+
+            foreach ($data['students'] as $enrollmentId => $studentData) {
+                $enrollment = \App\Models\Enrollment::where('id', $enrollmentId)
+                    ->where('section_id', $section->id)
+                    ->where('school_year', $currentYear)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$enrollment) {
+                    continue;
+                }
+
+                $student = $enrollment->student;
+                $summary = isset($studentData['pedagogical_summary']) ? trim($studentData['pedagogical_summary']) : null;
+                $passed  = $studentData['status'] === 'Aprobado';
+                $targetSectionId = !empty($studentData['target_section_id']) ? (int) $studentData['target_section_id'] : null;
+
+                // Validación estricta de rango en servidor
+                if ($passed && $isTerminalSixth) {
+                    // 6to Grado aprobado siempre egresa del plantel
+                    $targetSectionId = null;
+                } elseif ($targetSectionId !== null) {
+                    $targetSection = $targetSections->get($targetSectionId);
+                    if (!$targetSection) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            "students.{$enrollmentId}.target_section_id" => 'La sección destino seleccionada no existe.',
+                        ]);
+                    }
+                    $targetRank = ($targetSection->grade->educational_level_id * 10) + $targetSection->grade->number;
+                    if ($passed && $targetRank <= $currentRank) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            "students.{$enrollmentId}.target_section_id" => 'Un estudiante aprobado debe promoverse a un grado superior al actual.',
+                        ]);
+                    }
+                    if (!$passed && $targetRank !== $currentRank) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            "students.{$enrollmentId}.target_section_id" => 'Un estudiante reprobado solo puede inscribirse como repitiente en el mismo grado.',
+                        ]);
+                    }
+                }
+
+                $enrollmentUpdates = [
+                    'status' => $passed ? 'Promovido' : 'Repitiente',
+                ];
+                if ($summary !== null && $summary !== '') {
+                    $enrollmentUpdates['pedagogical_summary'] = $summary;
+                    $enrollmentUpdates['recommendations']     = $summary;
+                }
+                $enrollment->update($enrollmentUpdates);
+
+                if ($targetSectionId !== null) {
+                    \App\Models\Enrollment::updateOrCreate(
+                        [
+                            'student_id'  => $enrollment->student_id,
+                            'school_year' => $data['next_school_year'],
+                        ],
+                        [
+                            'representative_id' => $enrollment->representative_id ?? $student->representative_id,
+                            'section_id'        => $targetSectionId,
+                            'status'            => $passed ? 'Inscrito' : 'Repitiente',
+                        ]
+                    );
+                    $student->update(['status' => 'Activo', 'is_active' => true]);
+                } elseif ($passed && $isTerminalSixth) {
+                    $student->update(['status' => 'Egresado', 'is_active' => false]);
+                    \App\Models\Graduate::updateOrCreate(
+                        ['student_id' => $enrollment->student_id],
+                        [
+                            'promotion_year' => $enrollment->school_year,
+                            'notes'          => $summary ?: 'Promovido y egresado oficialmente de 6to Grado.',
+                        ]
+                    );
+                } else {
+                    $student->update(['status' => 'Retirado', 'is_active' => false]);
+                }
+            }
+        });
+
+        return redirect()->route('sections.show', $section->id)->with('success', 'Cierre de año escolar y prosecución procesados correctamente.');
     }
 
     public function gradesView(Request $request, Section $section)
@@ -363,16 +450,40 @@ class SectionController extends Controller
         }
 
         $validated = $request->validate([
-            'subject_id' => 'required|exists:subjects,id',
-            'term' => 'required|integer|min:1|max:3',
-            'grades' => 'required|array',
-            'grades.*.score' => 'nullable|in:A,B,C,D,E',
-            'grades.*.observations' => 'nullable|string',
+            'subject_id'              => 'required|exists:subjects,id',
+            'term'                    => 'required|integer|min:1|max:3',
+            'learning_projects'       => 'nullable|string|max:500',
+            'grades'                  => 'required|array',
+            'grades.*.score'          => 'nullable|in:A,B,C,D,E',
+            'grades.*.observations'   => 'nullable|string|max:1000',
+            'grades.*.diagnostic'     => 'nullable|string|max:1000',
         ]);
 
+        $diagCol = 'diagnostic_' . (int) $validated['term'];
+        $sharedProject = $validated['learning_projects'] ?? null;
+
+        // Verificar que cada matrícula pertenezca realmente a esta sección y año escolar
+        $validEnrollmentIds = \App\Models\Enrollment::where('section_id', $section->id)
+            ->where('school_year', $currentYear)
+            ->pluck('id')
+            ->flip();
+
         foreach ($validated['grades'] as $enrollmentId => $data) {
-            if ($data['score'] === null) {
-                // Remove if score is empty? Maybe better just not update.
+            if (!$validEnrollmentIds->has((int) $enrollmentId)) {
+                continue;
+            }
+            $enrUpdates = [];
+            if (array_key_exists('diagnostic', $data) && $data['diagnostic'] !== null) {
+                $enrUpdates[$diagCol] = $data['diagnostic'];
+            }
+            if ($sharedProject !== null && trim($sharedProject) !== '') {
+                $enrUpdates['learning_projects'] = trim($sharedProject);
+            }
+            if (!empty($enrUpdates)) {
+                \App\Models\Enrollment::where('id', $enrollmentId)->update($enrUpdates);
+            }
+
+            if (empty($data['score'])) {
                 continue;
             }
 

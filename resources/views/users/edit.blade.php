@@ -29,7 +29,7 @@
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-6">
             <h4 class="text-xs font-black text-[#FBC02D] uppercase tracking-widest flex items-center mb-6">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
-                Datos de Identidad (Login)
+                Datos de Identidad y Acceso
             </h4>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -43,36 +43,40 @@
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Nombre</label>
                     <input type="text" name="first_name" value="{{ old('first_name', $user->first_name) }}" required
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
 
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Nombre</label>
                     <input type="text" name="second_name" value="{{ old('second_name', $user->second_name) }}"
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
 
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Apellido</label>
                     <input type="text" name="last_name" value="{{ old('last_name', $user->last_name) }}" required
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
 
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Apellido</label>
                     <input type="text" name="second_last_name" value="{{ old('second_last_name', $user->second_last_name) }}"
-                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
+                        oninput="this.value = this.value.toUpperCase()"
+                        class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E] uppercase">
                 </div>
 
                 <div class="group space-y-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono *</label>
+                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="Ej: 04141234567"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
                 </div>
 
                 <div class="group space-y-2 md:col-span-2">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico *</label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required placeholder="usuario@correo.com"
                         class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/20 outline-none transition-all font-bold text-[#1A237E]">
                     @error('email')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                 </div>
@@ -88,10 +92,21 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="group space-y-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nivel de Acceso (Rol)</label>
+                    @php
+                        $reqLabels = ['admin' => 'Administrador', 'docente' => 'Docente', 'worker' => 'Personal Administrativo'];
+                    @endphp
+                    @if($user->isPending() && $user->requested_role)
+                        <p class="text-[11px] font-extrabold text-amber-600 ml-1">Solicitó el cargo: {{ $reqLabels[$user->requested_role] ?? ucfirst($user->requested_role) }}</p>
+                    @endif
                     <select name="role_id" required class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-blue-200 outline-none transition-all font-bold text-[#1A237E] appearance-none">
+                        <option value="" disabled {{ is_null($user->role_id) && !$user->requested_role ? 'selected' : '' }}>Seleccione un rol...</option>
                         @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
-                                {{ ucfirst($role->name) }}
+                            @php
+                                $selectedRole = old('role_id', $user->role_id);
+                                $isSelected = $selectedRole ? ($selectedRole == $role->id) : ($user->requested_role === $role->name);
+                            @endphp
+                            <option value="{{ $role->id }}" {{ $isSelected ? 'selected' : '' }}>
+                                {{ $role->name === 'docente' ? 'Docente (Sincroniza ficha docente)' : ($role->name === 'worker' ? 'Personal Administrativo / Secretaría' : 'Administrador') }}
                             </option>
                         @endforeach
                     </select>
@@ -101,9 +116,9 @@
                     <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Estatus de la Cuenta</label>
                     <div class="flex items-center space-x-4 mt-2 bg-gray-50 px-5 py-3.5 rounded-2xl">
                         <label class="flex items-center cursor-pointer">
-                            <input type="checkbox" name="is_active" value="1" {{ $user->is_active ? 'checked' : '' }} class="w-5 h-5 text-[#1A237E] rounded focus:ring-[#1A237E]">
-                            <span class="ml-3 text-sm font-bold {{ $user->is_active ? 'text-green-600' : 'text-red-500' }}">
-                                Permitir inicio de sesión
+                            <input type="checkbox" name="is_active" value="1" {{ ($user->is_active || $user->isPending()) ? 'checked' : '' }} class="w-5 h-5 text-[#1A237E] rounded focus:ring-[#1A237E]">
+                            <span class="ml-3 text-sm font-bold text-[#1A237E]">
+                                Permitir inicio de sesión (Cuenta Activa)
                             </span>
                         </label>
                     </div>

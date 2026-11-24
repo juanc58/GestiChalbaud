@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Seed Roles
         $adminRole = \App\Models\Role::firstOrCreate(['name' => 'admin']);
+        $docenteRole = \App\Models\Role::firstOrCreate(['name' => 'docente']);
         $workerRole = \App\Models\Role::firstOrCreate(['name' => 'worker']);
-        $repRole = \App\Models\Role::firstOrCreate(['name' => 'representative']);
 
         // 2. Seed Educational Levels
         $inicial = \App\Models\EducationalLevel::firstOrCreate(['name' => 'Educación Inicial']);
@@ -49,9 +49,9 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::updateOrCreate(
             ['cedula' => 12345678],
             [
-                'first_name' => 'Administrador',
-                'last_name'  => 'Páez',
-                'email'      => 'admin@paez.edu',
+                'first_name' => 'ADMINISTRADOR',
+                'last_name'  => 'CHALBAUD',
+                'email'      => 'admin@infochalbaud.edu.ve',
                 'role_id'    => $adminRole->id,
                 'password'   => bcrypt('Admin123*'),
                 'is_active'  => true,

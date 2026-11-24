@@ -4,32 +4,57 @@
         <span class="w-8 h-8 rounded-full bg-[#FBC02D]/10 flex items-center justify-center mr-3">1</span>
         Identificación del Estudiante
     </h4>
+
+    {{-- Fotografía del Estudiante --}}
+    <div class="mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col sm:flex-row items-center gap-5">
+        <div class="w-20 h-20 rounded-full overflow-hidden bg-white border-2 border-[#1A237E]/20 flex items-center justify-center flex-shrink-0">
+            <img id="student_photo_preview"
+                 src="{{ isset($student) && $student->photo_url ? $student->photo_url : '' }}"
+                 alt="Foto"
+                 class="w-full h-full object-cover {{ isset($student) && $student->photo_url ? '' : 'hidden' }}">
+            <span id="student_photo_placeholder" class="text-xs font-extrabold text-gray-400 uppercase {{ isset($student) && $student->photo_url ? 'hidden' : '' }}">Sin Foto</span>
+        </div>
+        <div class="flex-1 space-y-2 text-center sm:text-left">
+            <label class="block text-xs font-bold text-gray-500 uppercase">Fotografía Tipo Carnet (Opcional · JPG/PNG/WEBP, máx. 2 MB)</label>
+            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp"
+                   onchange="if(this.files && this.files[0]){ const img=document.getElementById('student_photo_preview'); img.src=URL.createObjectURL(this.files[0]); img.classList.remove('hidden'); document.getElementById('student_photo_placeholder').classList.add('hidden'); }"
+                   class="block w-full text-xs text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#1A237E] file:text-white hover:file:bg-[#1A237E]/90 cursor-pointer">
+            @error('photo')<p class="text-[10px] font-bold text-red-500">{{ $message }}</p>@enderror
+            @if(isset($student) && $student->photo_path)
+                <label class="inline-flex items-center gap-2 text-xs font-bold text-red-600 cursor-pointer">
+                    <input type="checkbox" name="remove_photo" value="1" class="rounded text-red-600">
+                    Eliminar fotografía actual
+                </label>
+            @endif
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Primer Nombre <span class="text-red-500">*</span></label>
-            <input type="text" name="first_name" value="{{ old('first_name', $student->first_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
+            <input type="text" name="first_name" value="{{ old('first_name', $student->first_name ?? '') }}" required oninput="this.value = this.value.toUpperCase()" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold uppercase">
             @error('first_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Segundo Nombre</label>
-            <input type="text" name="second_name" value="{{ old('second_name', $student->second_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
+            <input type="text" name="second_name" value="{{ old('second_name', $student->second_name ?? '') }}" oninput="this.value = this.value.toUpperCase()" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold uppercase">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Primer Apellido <span class="text-red-500">*</span></label>
-            <input type="text" name="last_name" value="{{ old('last_name', $student->last_name ?? '') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
+            <input type="text" name="last_name" value="{{ old('last_name', $student->last_name ?? '') }}" required oninput="this.value = this.value.toUpperCase()" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold uppercase">
             @error('last_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Segundo Apellido</label>
-            <input type="text" name="second_last_name" value="{{ old('second_last_name', $student->second_last_name ?? '') }}" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
+            <input type="text" name="second_last_name" value="{{ old('second_last_name', $student->second_last_name ?? '') }}" oninput="this.value = this.value.toUpperCase()" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold uppercase">
         </div>
         <div class="space-y-2">
             <label class="text-xs font-bold text-gray-400 uppercase ml-1">Cédula (Opcional)</label>
             <input type="text" id="cedula_input" name="cedula" value="{{ old('cedula', $student->cedula ?? '') }}" placeholder="Ej: 12.345.678" maxlength="10" class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
         </div>
         <div class="space-y-2">
-            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Fecha de Nacimiento <span class="text-red-500">*</span></label>
-            <input type="date" id="birth_date_field" name="birth_date" value="{{ old('birth_date', isset($student->birth_date) ? \Carbon\Carbon::parse($student->birth_date)->format('Y-m-d') : '') }}" max="{{ now()->subYears(3)->format('Y-m-d') }}" min="{{ now()->subYears(18)->addDay()->format('Y-m-d') }}" required class="w-full px-5 py-3 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/30 outline-none font-semibold">
+            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Fecha de Nacimiento (Día-Mes-Año) <span class="text-red-500">*</span></label>
+            <x-date-input-es name="birth_date" id="birth_date_field" :value="old('birth_date', $student->birth_date ?? '')" :required="true" />
             @error('birth_date')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
         </div>
         <div class="space-y-2">

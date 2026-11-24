@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" width="160" height="180">
+  <!-- Laurel / Olive Wreath -->
+  <path d="M26 118 C12 92, 16 54, 36 30" fill="none" stroke="#2E7D32" stroke-width="5" stroke-linecap="round"/>
+  <path d="M134 118 C148 92, 144 54, 124 30" fill="none" stroke="#2E7D32" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="20" cy="95" rx="7" ry="4" transform="rotate(-35 20 95)" fill="#388E3C"/>
+  <ellipse cx="18" cy="74" rx="7" ry="4" transform="rotate(-20 18 74)" fill="#388E3C"/>
+  <ellipse cx="24" cy="52" rx="7" ry="4" transform="rotate(-10 24 52)" fill="#388E3C"/>
+  <ellipse cx="140" cy="95" rx="7" ry="4" transform="rotate(35 140 95)" fill="#388E3C"/>
+  <ellipse cx="142" cy="74" rx="7" ry="4" transform="rotate(20 142 74)" fill="#388E3C"/>
+  <ellipse cx="136" cy="52" rx="7" ry="4" transform="rotate(10 136 52)" fill="#388E3C"/>
+
+  <!-- Outer Golden Shield Frame -->
+  <path d="M34 22 L126 22 L126 84 C126 118, 98 138, 80 148 C62 138, 34 118, 34 84 Z" fill="#FBC02D" stroke="#B78103" stroke-width="3"/>
+
+  <!-- Top Left Quarter: Red -->
+  <path d="M38 26 L80 26 L80 76 L38 76 Z" fill="#D32F2F"/>
+  <!-- Top Right Quarter: Yellow -->
+  <path d="M80 26 L122 26 L122 76 L80 76 Z" fill="#FBC02D"/>
+  <!-- Bottom Half: Royal Blue -->
+  <path d="M38 76 L122 76 L122 84 C122 114, 96 132, 80 142 C64 132, 38 114, 38 84 Z" fill="#1A237E"/>
+
+  <!-- 8 White Stars Arc in Blue Field -->
+  <circle cx="52" cy="98" r="2.6" fill="#FFFFFF"/>
+  <circle cx="59" cy="91" r="2.6" fill="#FFFFFF"/>
+  <circle cx="67" cy="87" r="2.6" fill="#FFFFFF"/>
+  <circle cx="76" cy="85" r="2.6" fill="#FFFFFF"/>
+  <circle cx="84" cy="85" r="2.6" fill="#FFFFFF"/>
+  <circle cx="93" cy="87" r="2.6" fill="#FFFFFF"/>
+  <circle cx="101" cy="91" r="2.6" fill="#FFFFFF"/>
+  <circle cx="108" cy="98" r="2.6" fill="#FFFFFF"/>
+
+  <!-- Stylized White Emblem Symbol in Red & Yellow Quarters -->
+  <path d="M53 40 L65 40 L59 64 Z" fill="#FBC02D"/>
+  <line x1="59" y1="36" x2="59" y2="66" stroke="#FFFFFF" stroke-width="2.5"/>
+  <line x1="92" y1="38" x2="110" y2="62" stroke="#1A237E" stroke-width="3"/>
+  <line x1="110" y1="38" x2="92" y2="62" stroke="#D32F2F" stroke-width="3"/>
+
+  <!-- Tricolor Ribbon Banner at Base -->
+  <rect x="24" y="152" width="37" height="14" rx="2" fill="#FBC02D"/>
+  <rect x="61" y="152" width="38" height="14" rx="0" fill="#1A237E"/>
+  <rect x="99" y="152" width="37" height="14" rx="2" fill="#D32F2F"/>
+  <text x="80" y="162" font-family="Arial, Helvetica, sans-serif" font-size="8.5" font-weight="bold" fill="#FFFFFF" text-anchor="middle">MPPE</text>
+</svg>
+

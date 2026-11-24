@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-5xl mx-auto space-y-8">
-    <div class="flex justify-between items-end">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
             <div class="flex items-center space-x-3 mb-2">
                 <a href="{{ route('sections.show', $section->id) }}" class="text-gray-400 hover:text-[#1A237E] transition-colors font-bold text-sm flex items-center">

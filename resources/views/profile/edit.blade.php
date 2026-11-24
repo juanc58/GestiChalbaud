@@ -34,33 +34,37 @@
                     <div class="group space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Nombre <span class="text-red-400">*</span></label>
                         <input type="text" name="first_name" value="{{ old('first_name', $user->first_name) }}" required
-                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
+                            oninput="this.value = this.value.toUpperCase()"
+                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E] uppercase">
                         @error('first_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="group space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Nombre</label>
                         <input type="text" name="second_name" value="{{ old('second_name', $user->second_name) }}"
-                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
+                            oninput="this.value = this.value.toUpperCase()"
+                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E] uppercase">
                     </div>
                     <div class="group space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Primer Apellido <span class="text-red-400">*</span></label>
                         <input type="text" name="last_name" value="{{ old('last_name', $user->last_name) }}" required
-                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
+                            oninput="this.value = this.value.toUpperCase()"
+                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E] uppercase">
                         @error('last_name')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="group space-y-2">
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Segundo Apellido</label>
                         <input type="text" name="second_last_name" value="{{ old('second_last_name', $user->second_last_name) }}"
+                            oninput="this.value = this.value.toUpperCase()"
+                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E] uppercase">
+                    </div>
+                    <div class="group space-y-2">
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono <span class="text-red-400">*</span></label>
+                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="Ej: 04141234567"
                             class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
                     </div>
                     <div class="group space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono</label>
-                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
-                            class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                    </div>
-                    <div class="group space-y-2">
-                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
-                        <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                        <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Correo Electrónico <span class="text-red-400">*</span></label>
+                        <input type="email" name="email" value="{{ old('email', $user->email) }}" required placeholder="usuario@correo.com"
                             class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
                         @error('email')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
                     </div>
@@ -74,44 +78,6 @@
                         <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Título Académico</label>
                         <input type="text" name="academic_degree" value="{{ old('academic_degree', $user->teacher->academic_degree) }}"
                             class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                    </div>
-                </div>
-                @endif
-
-                {{-- REPRESENTATIVE extended fields --}}
-                @if(Auth::user()->isRepresentative() && Auth::user()->representative)
-                <div class="pt-4 border-t border-gray-100 space-y-4">
-                    <h5 class="text-[10px] font-black text-[#FBC02D] uppercase tracking-widest">Contacto Adicional</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="group space-y-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">WhatsApp / Celular <span class="text-red-400">*</span></label>
-                            <input type="text" name="phone_whatsapp" value="{{ old('phone_whatsapp', $user->representative->phone_whatsapp) }}" required
-                                class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                            @error('phone_whatsapp')<p class="text-[10px] font-bold text-red-500 ml-1 mt-1">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="group space-y-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Teléfono Alternativo</label>
-                            <input type="text" name="phone_local" value="{{ old('phone_local', $user->representative->phone_local) }}"
-                                class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                        </div>
-                        <div class="group space-y-2 md:col-span-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Facebook / Red Social</label>
-                            <input type="text" name="facebook" value="{{ old('facebook', $user->representative->facebook) }}"
-                                class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-[#1A237E]/10 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                        </div>
-                    </div>
-                    <h5 class="text-[10px] font-black text-green-600 uppercase tracking-widest pt-2">Datos Laborales</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="group space-y-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Profesión u Oficio</label>
-                            <input type="text" name="job_title" value="{{ old('job_title', $user->representative->job_title) }}"
-                                class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-green-100 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                        </div>
-                        <div class="group space-y-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Lugar de Trabajo</label>
-                            <input type="text" name="workplace_address" value="{{ old('workplace_address', $user->representative->workplace_address) }}"
-                                class="w-full px-5 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-green-100 focus:bg-white outline-none transition-all font-bold text-[#1A237E]">
-                        </div>
                     </div>
                 </div>
                 @endif
@@ -167,7 +133,7 @@
 
                 <div>
                     <h4 class="text-xs font-black text-amber-600 uppercase tracking-widest mb-1">Pregunta de Seguridad</h4>
-                    <p class="text-[11px] text-gray-400 font-semibold">Usada para recuperar tu acceso desde el portal de login.</p>
+                    <p class="text-[11px] text-gray-400 font-semibold">Usada para recuperar tu acceso desde el portal de inicio de sesión.</p>
                 </div>
 
                 @if($userSecurityAnswer)
@@ -220,12 +186,24 @@
                 </div>
                 <h5 class="font-extrabold text-[#1A237E]">{{ $user->full_name }}</h5>
                 <span class="mt-2 px-4 py-1.5 bg-[#FBC02D]/10 text-[#FBC02D] rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100">
-                    {{ $user->role->name }}
+                    {{ $user->role_label }}
                 </span>
                 <p class="mt-4 text-xs text-gray-400 font-semibold leading-relaxed">
-                    Tu cuenta está vinculada como <b>{{ $user->role->name }}</b>. Algunos datos críticos están protegidos por el administrador.
+                    Tu cuenta está vinculada como <b>{{ $user->role_label }}</b>. Algunos datos críticos están protegidos por el administrador.
                 </p>
             </div>
+
+            @if(Auth::user()->isAdmin() && Route::has('settings.smtp.edit'))
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-3">
+                <h5 class="text-xs font-black text-[#1A237E] uppercase tracking-widest">Servidor de Correo (SMTP)</h5>
+                <p class="text-xs text-gray-500 font-semibold leading-relaxed">
+                    Configura Mailpit, Gmail u otro proveedor SMTP para el envío de boletines y constancias a los representantes.
+                </p>
+                <a href="{{ route('settings.smtp.edit') }}" class="inline-flex items-center justify-center w-full px-4 py-3 rounded-xl bg-[#1A237E] text-white text-xs font-bold hover:bg-[#1A237E]/90 transition-all">
+                    Configurar Correo SMTP →
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 </div>

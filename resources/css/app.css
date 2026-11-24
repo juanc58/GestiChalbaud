@@ -6,7 +6,7 @@
 @source '../**/*.js';
 
 /* =====================================================
-   SISTEMA DE DISEÑO — GestiChalbaud
+   SISTEMA DE DISEÑO — Infochalbaud
    U.E.B. Coronel Carlos Delgado Chalbaud
    Basado en: DESIGN.md (estructura) + visual_identity.md (colores)
    ===================================================== */
@@ -36,7 +36,7 @@
     --font-weight-black:   900;
 
     /* =====================================================
-       PALETA INSTITUCIONAL GESTICHALBAUD
+       PALETA INSTITUCIONAL INFOCHALBAUD
        (visual_identity.md → mapeo sobre tokens DESIGN.md)
        ===================================================== */
 

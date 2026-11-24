@@ -11,12 +11,18 @@ class Teacher extends Model
 
     protected $fillable = [
         'user_id',
+        'photo_path',
         'gender',
         'birth_date',
         'entry_date',
         'academic_degree',
         'status',
     ];
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo_path ? asset('storage/' . $this->photo_path) : null;
+    }
 
     // --- Accessors that delegate to the linked user ---
     public function getFirstNameAttribute(): ?string { return $this->user?->first_name; }
@@ -39,6 +45,11 @@ class Teacher extends Model
     public function currentAssignment($year)
     {
         return $this->hasOne(TeacherAssignment::class)->where('school_year', $year);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(TeacherAttendance::class);
     }
 }
 

@@ -76,8 +76,12 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="flex items-center">
-                                <div class="w-8 h-8 rounded-full bg-[#1A237E]/10 text-[#1A237E] flex items-center justify-center font-bold text-xs mr-3">
-                                    {{ substr($student->first_name, 0, 1) }}
+                                <div class="w-8 h-8 rounded-full bg-[#1A237E]/10 text-[#1A237E] flex items-center justify-center font-bold text-xs mr-3 overflow-hidden flex-shrink-0">
+                                    @if($student->photo_url)
+                                        <img src="{{ $student->photo_url }}" alt="Foto" class="w-full h-full object-cover">
+                                    @else
+                                        {{ substr($student->first_name, 0, 1) }}
+                                    @endif
                                 </div>
                                 <div>
                                     <span class="font-semibold text-sm text-[#1A237E]">{{ $student->first_name }} {{ $student->last_name }}</span>
